@@ -1,4 +1,3 @@
-```html
 {% load static %}
 <!DOCTYPE html>
 <html lang="pt-BR">
@@ -16,7 +15,7 @@
     <main class="centro">
         <h1 class="titulo">MatchPoint</h1>
 
-        <form class="cartao" action="#" method="post">
+        <form class="cartao" action="{% url 'editar_usuario' %}" method="post">
             {% csrf_token %}
 
             <h2>Editar perfil</h2>
@@ -24,6 +23,11 @@
             <p class="texto">
                 Atualize suas informações no MatchPoint.
             </p>
+            {% if messages %}
+                {% for message in messages %}
+                    <p class="texto">{{ message }}</p>
+                {% endfor %}
+            {% endif %}
 
             <div class="campo">
                 <label for="nome">Nome completo</label>
@@ -31,6 +35,7 @@
                     type="text"
                     id="nome"
                     name="nome"
+                    value="{{ usuario.get_full_name }}"
                     placeholder="Digite seu nome"
                     autocomplete="name"
                     required
@@ -43,6 +48,7 @@
                     type="email"
                     id="email"
                     name="email"
+                    value="{{ usuario.email }}"
                     placeholder="Digite seu e-mail"
                     autocomplete="email"
                     required
@@ -55,6 +61,7 @@
                     type="url"
                     id="foto"
                     name="foto"
+                    value="{{ foto|default:'' }}"
                     placeholder="https://exemplo.com/foto.jpg"
                 >
             </div>
@@ -84,4 +91,3 @@
 
 </body>
 </html>
-```
