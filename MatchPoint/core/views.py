@@ -52,3 +52,4 @@ def editar_usuario(request):
             "foto": perfil.foto,
         },
     )
+    
