@@ -1,58 +1,120 @@
+
+{% load static %}
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <title>MatchPoint - Usuários</title>
-    <style>
-        body {
-            font-family: Arial;
-            background-color: #f2f2f2;
-        }
-        h1 {
-            color: #ff6600;
-            text-align: center;
-        }
-        table {
-            margin: 30px auto;
-            background-color: white;
-            border-collapse: collapse;
-        }
-        th, td {
-            border: 1px solid #cccccc;
-            padding: 10px;
-        }
-        th {
-            background-color: #ff6600;
-            color: white;
-        }
-    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>MatchPoint — Usuários</title>
+
+    <link rel="stylesheet" href="{% static 'estilo.css' %}">
+    <link rel="stylesheet" href="{% static 'usuarios.css' %}">
 </head>
-<body>
-    <h1>Usuários do MatchPoint</h1>
 
-    <table>
-        <tr>
-            <th>Nome</th>
-            <th>E-mail</th>
-            <th>Esporte</th>
-        </tr>
-        <tr>
-            <td>Ana Souza</td>
-            <td>ana@email.com</td>
-            <td>Vôlei de praia</td>
-        </tr>
-        <tr>
-            <td>Bruno Lima</td>
-            <td>bruno@email.com</td>
-            <td>Beach tennis</td>
-        </tr>
-        <tr>
-            <td>Carla Dias</td>
-            <td>carla@email.com</td>
-            <td>Vôlei de praia</td>
-        </tr>
-    </table>
+<body class="usuarios-page">
 
-    <p style="text-align: center;"><a href="/cadastro/">Voltar para o cadastro</a></p>
+    <header class="usuarios-navbar">
+        <a href="{% url 'home' %}" class="usuarios-logo">
+            match<span>point</span><b>.</b>
+        </a>
+
+        <nav class="usuarios-nav">
+            <a href="{% url 'home' %}">Início</a>
+            <a href="{% url 'editar_usuario' %}">Meu perfil</a>
+        </nav>
+    </header>
+
+    <main class="usuarios-main">
+
+        <section class="usuarios-intro">
+            <span class="usuarios-eyebrow">COMUNIDADE MATCHPOINT</span>
+
+            <h1>Jogadores<span>.</span></h1>
+
+            <p>
+                Conheça quem faz parte da comunidade e descubra
+                quais esportes os usuários praticam.
+            </p>
+        </section>
+
+        <section class="usuarios-painel">
+
+            <div class="usuarios-painel-header">
+                <div>
+                    <h2>Usuários cadastrados</h2>
+                    <p>Informações dos perfis registrados na plataforma.</p>
+                </div>
+
+                <span class="usuarios-contador">
+                    {{ usuarios|length }} usuário(s)
+                </span>
+            </div>
+
+            <div class="usuarios-tabela-wrapper">
+                <table class="usuarios-tabela">
+                    <thead>
+                        <tr>
+                            <th>Jogador</th>
+                            <th>E-mail</th>
+                            <th>Esportes</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for usuario in usuarios %}
+                            <tr>
+                                <td>
+                                    <div class="jogador-info">
+                                        <div class="jogador-avatar">
+                                            {{ usuario.first_name|default:usuario.username|slice:":1"|upper }}
+                                        </div>
+
+                                        <span>
+                                            {{ usuario.get_full_name|default:usuario.username }}
+                                        </span>
+                                    </div>
+                                </td>
+
+                                <td class="usuario-email">
+                                    {{ usuario.email|default:"Não informado" }}
+                                </td>
+
+                                <td>
+                                    <div class="esportes-lista">
+                                        {% for perfil_esporte in usuario.perfilesporte_set.all %}
+                                            <span class="esporte-tag">
+                                                {{ perfil_esporte.esporte.nome }}
+                                            </span>
+                                        {% empty %}
+                                            <span class="esporte-vazio">
+                                                Nenhum esporte informado
+                                            </span>
+                                        {% endfor %}
+                                    </div>
+                                </td>
+                            </tr>
+                        {% empty %}
+                            <tr>
+                                <td colspan="3" class="usuarios-vazio">
+                                    <span class="vazio-simbolo">◎</span>
+                                    <strong>Nenhum jogador encontrado</strong>
+                                    <p>Os usuários cadastrados aparecerão aqui.</p>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="usuarios-painel-footer">
+                <span>MatchPoint — Deu match. Deu jogo.</span>
+                <a href="{% url 'home' %}">Voltar ao início →</a>
+            </div>
+
+        </section>
+
+    </main>
+
 </body>
 </html>

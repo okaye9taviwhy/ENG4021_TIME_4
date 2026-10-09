@@ -1,73 +1,168 @@
+
+{% load static %}
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MatchPoint</title>
-    <link rel="stylesheet" href="estilo.css"
+
+    <title>MatchPoint — Deu match. Deu jogo.</title>
+
+    <link rel="stylesheet" href="{% static 'estilo.css' %}">
+    <link rel="stylesheet" href="{% static 'home.css' %}">
 </head>
-  <div class="container">
 
-    #Cabeçalho 
+<body class="home-page">
 
-    <header class="navbar">
-      <nav class="nav-links">
-        <a href="#">Início</a>
-        <a href="#">Encontrar Parceiros</a>
-        <a href="#">Agendar Quadras</a>
-        <a href="#">Amistosos</a>
-      </nav>
-      <button class="btn-entrar">Entrar</button>
+    <header class="home-navbar">
+        <a href="{% url 'home' %}" class="home-logo">
+            match<span>point</span><span class="logo-dot">.</span>
+        </a>
+
+        <nav class="home-nav" aria-label="Navegação principal">
+            <a href="{% url 'home' %}" class="nav-active">Início</a>
+            <a href="#funcionalidades">Encontrar parceiros</a>
+            <a href="#funcionalidades">Agendar quadras</a>
+            <a href="#funcionalidades">Amistosos</a>
+        </nav>
+
+        <div class="home-actions">
+            <a href="{% url 'login' %}" class="home-login">Entrar</a>
+            <a href="{% url 'cadastro' %}" class="home-signup">
+                Criar conta <span aria-hidden="true">↗</span>
+            </a>
+        </div>
     </header>
 
-   #Main
-    <main class="hero">
-      
-      <!-- Lado Esquerdo: Títulos e Texto -->
-      <div class="left-col">
-        <div class="brand">
-          <h1>matchpoint</h1>
-          <h2>deu match. deu jogo.</h2>
-        </div>
-        <p class="desc">
-          Encontre parceiros e times para diversos esportes, agende quadras em espaços públicos e organize amistosos de forma simples e rápida.
-        </p>
-      </div>
+    <main>
+        <section class="home-hero">
+            <div class="hero-content">
+                <span class="hero-label">
+                    <span class="status-dot"></span>
+                    SEU PRÓXIMO JOGO COMEÇA AQUI
+                </span>
 
-      <!-- Lado Direito: Cards -->
-      <div class="right-col">
-        
-        <div class="card offset-right">
-          <div class="text">
-            <h3>Organize amistosos</h3>
-            <p>Crie ou participe de jogos amistosos, defina regras, horários e acompanhe o histórico.</p>
-          </div>
-        </div>
+                <h1>
+                    Menos procura.<br>
+                    <span>Mais jogo.</span>
+                </h1>
 
-        <div class="card offset-left">
-          <div class="text">
-            <h3>Encontre parceiros</h3>
-            <p>Conecte-se com jogadores do seu nível ou de níveis diferentes para formar times e duplas equilibrados.</p>
-          </div>
-        </div>
+                <p class="hero-description">
+                    Encontre parceiros, forme seu time e organize
+                    partidas. O esporte fica melhor quando você
+                    encontra as pessoas certas.
+                </p>
 
-        <div class="card offset-right">
-          <div class="text">
-            <h3>Agende quadras</h3>
-            <p>Reserve horários em quadras públicas de tênis, beach tênis, futebol, vôlei e muito mais.</p>
-          </div>
-        </div>
+                <div class="hero-buttons">
+                    <a href="{% url 'cadastro' %}" class="home-signup hero-cta">
+                        Encontrar meu time <span aria-hidden="true">→</span>
+                    </a>
 
-      </div>
+                    <a href="#funcionalidades" class="hero-secondary">
+                        Conhecer a plataforma
+                    </a>
+                </div>
 
+                <div class="hero-note">
+                    <span class="note-line"></span>
+                    Seu próximo parceiro pode estar mais perto do que você imagina.
+                </div>
+            </div>
+
+            <div class="hero-visual" aria-label="Destaques da plataforma">
+                <div class="visual-orbit orbit-one"></div>
+                <div class="visual-orbit orbit-two"></div>
+
+                <div class="visual-center">
+                    <span class="visual-cross">+</span>
+                    <span class="visual-brand">MP</span>
+                    <span class="visual-caption">MATCHPOINT</span>
+                </div>
+
+                <div class="floating-card float-top">
+                    <span class="floating-icon green-icon">↗</span>
+                    <div>
+                        <strong>Encontre seu time</strong>
+                        <small>Jogue com novas pessoas</small>
+                    </div>
+                </div>
+
+                <div class="floating-card float-bottom">
+                    <span class="floating-icon pink-icon">◎</span>
+                    <div>
+                        <strong>Partiu jogar?</strong>
+                        <small>Seu próximo jogo começa aqui</small>
+                    </div>
+                </div>
+
+                <span class="visual-decoration decoration-one"></span>
+                <span class="visual-decoration decoration-two"></span>
+            </div>
+        </section>
+
+        <section class="features-section" id="funcionalidades">
+            <div class="section-heading">
+                <div>
+                    <span class="section-eyebrow">TUDO EM UM SÓ LUGAR</span>
+                    <h2>Seu jogo. Suas regras.</h2>
+                </div>
+
+                <p>
+                    Da primeira conexão ao apito inicial,
+                    organize sua vida esportiva.
+                </p>
+            </div>
+
+            <div class="features-grid">
+                <article class="feature-card feature-green">
+                    <span class="feature-number">01 / CONEXÃO</span>
+                    <div class="feature-icon">↗</div>
+                    <h3>Encontre parceiros</h3>
+                    <p>
+                        Conheça jogadores, encontre pessoas
+                        do seu nível e forme duplas ou times.
+                    </p>
+                    <a href="{% url 'cadastro' %}" class="feature-link">
+                        Encontrar jogadores <span>→</span>
+                    </a>
+                </article>
+
+                <article class="feature-card feature-pink">
+                    <span class="feature-number">02 / COMUNIDADE</span>
+                    <div class="feature-icon">⌁</div>
+                    <h3>Organize amistosos</h3>
+                    <p>
+                        Reúna jogadores e organize partidas
+                        com horários e regras definidos.
+                    </p>
+                    <a href="{% url 'cadastro' %}" class="feature-link">
+                        Organizar partidas <span>→</span>
+                    </a>
+                </article>
+
+                <article class="feature-card feature-neutral">
+                    <span class="feature-number">03 / ESPAÇOS</span>
+                    <div class="feature-icon">⌖</div>
+                    <h3>Agende quadras</h3>
+                    <p>
+                        Planeje onde jogar e encontre espaços
+                        esportivos para sua próxima partida.
+                    </p>
+                    <a href="{% url 'cadastro' %}" class="feature-link">
+                        Planejar meu jogo <span>→</span>
+                    </a>
+                </article>
+            </div>
+        </section>
+
+        <footer class="home-footer">
+            <a href="{% url 'home' %}" class="home-logo">
+                match<span>point</span><span class="logo-dot">.</span>
+            </a>
+            <p>Feito para quem não quer ficar fora do jogo.</p>
+            <span>© MatchPoint</span>
+        </footer>
     </main>
-  </div>
 
-</body>
-</html>
-<body>
-    <div class="Textbox"
-    <h1
-</div>
 </body>
 </html>

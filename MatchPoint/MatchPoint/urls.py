@@ -21,10 +21,11 @@ from core import views
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path(
-        "editar-usuario/",
-        views.editar_usuario,
-        name="editar_usuario",
-    ),
+    path("", views.home, name="home"),
+    path("editar-usuario/", views.editar_usuario, name="editar_usuario"),
+    path("login/", views.login_usuario, name="login"),
+    path("cadastro/", views.cadastro_usuario, name="cadastro"),
+    path("usuarios/", views.lista_de_usuarios, name="lista_de_usuarios"),
+    path("remover-usuario/", views.remover_usuario,name="remover_usuario"),
 ]
 

@@ -1,0 +1,331 @@
+
+/* ===== MATCHPOINT: LISTA DE USUÁRIOS ===== */
+
+.usuarios-page {
+    --usuarios-bg: #0b0d0c;
+    --usuarios-card: #141715;
+    --usuarios-green: #39ff14;
+    --usuarios-pink: #ff00a8;
+    --usuarios-text: #f5f7f5;
+    --usuarios-muted: #a1a8a2;
+    --usuarios-border: #292e2b;
+
+    min-height: 100vh;
+    background: var(--usuarios-bg);
+    color: var(--usuarios-text);
+}
+
+.usuarios-page a {
+    text-decoration: none;
+}
+
+/* Cabeçalho */
+
+.usuarios-navbar {
+    min-height: 80px;
+    padding: 0 8%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    border-bottom: 1px solid var(--usuarios-border);
+}
+
+.usuarios-logo {
+    color: var(--usuarios-text);
+    font-size: 25px;
+    font-weight: 900;
+    letter-spacing: -1.5px;
+}
+
+.usuarios-logo span {
+    color: var(--usuarios-green);
+}
+
+.usuarios-logo b {
+    color: var(--usuarios-pink);
+}
+
+.usuarios-nav {
+    display: flex;
+    gap: 28px;
+}
+
+.usuarios-nav a {
+    color: var(--usuarios-muted);
+    font-size: 13px;
+    transition: color 0.2s ease;
+}
+
+.usuarios-nav a:hover {
+    color: var(--usuarios-green);
+}
+
+/* Introdução */
+
+.usuarios-main {
+    width: min(1100px, 84%);
+    margin: 0 auto;
+    padding: 70px 0 90px;
+}
+
+.usuarios-intro {
+    margin-bottom: 38px;
+}
+
+.usuarios-eyebrow {
+    color: var(--usuarios-green);
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 2px;
+}
+
+.usuarios-intro h1 {
+    margin: 15px 0 12px;
+    color: var(--usuarios-text);
+    font-size: clamp(42px, 6vw, 64px);
+    font-weight: 900;
+    letter-spacing: -3px;
+}
+
+.usuarios-intro h1 span {
+    color: var(--usuarios-pink);
+}
+
+.usuarios-intro p {
+    max-width: 550px;
+    margin: 0;
+    color: var(--usuarios-muted);
+    font-size: 14px;
+    line-height: 1.8;
+}
+
+/* Painel */
+
+.usuarios-painel {
+    overflow: hidden;
+    background: var(--usuarios-card);
+    border: 1px solid var(--usuarios-border);
+    border-top: 3px solid var(--usuarios-green);
+    border-radius: 10px;
+}
+
+.usuarios-painel-header {
+    padding: 25px 28px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    border-bottom: 1px solid var(--usuarios-border);
+}
+
+.usuarios-painel-header h2 {
+    margin: 0 0 7px;
+    font-size: 19px;
+}
+
+.usuarios-painel-header p {
+    margin: 0;
+    color: var(--usuarios-muted);
+    font-size: 12px;
+    line-height: 1.6;
+}
+
+.usuarios-contador {
+    flex-shrink: 0;
+    padding: 9px 12px;
+    border: 1px solid #31532c;
+    border-radius: 5px;
+    background: #172116;
+    color: var(--usuarios-green);
+    font-size: 11px;
+    font-weight: 700;
+}
+
+/* Tabela */
+
+.usuarios-tabela-wrapper {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.usuarios-tabela {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+}
+
+.usuarios-tabela th {
+    padding: 16px 24px;
+    background: #101210;
+    color: var(--usuarios-muted);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+.usuarios-tabela td {
+    padding: 18px 24px;
+    border-top: 1px solid var(--usuarios-border);
+    font-size: 13px;
+    vertical-align: middle;
+}
+
+.usuarios-tabela tbody tr {
+    transition: background 0.2s ease;
+}
+
+.usuarios-tabela tbody tr:hover {
+    background: #1a201b;
+}
+
+.jogador-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 170px;
+    font-weight: 700;
+}
+
+.jogador-avatar {
+    width: 38px;
+    height: 38px;
+    flex-shrink: 0;
+    display: grid;
+    place-items: center;
+    border: 1px solid #31532c;
+    border-radius: 50%;
+    background: #1b2a19;
+    color: var(--usuarios-green);
+    font-size: 14px;
+    font-weight: 800;
+}
+
+.usuario-email {
+    color: var(--usuarios-muted);
+    overflow-wrap: anywhere;
+}
+
+.esportes-lista {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.esporte-tag {
+    display: inline-block;
+    padding: 7px 9px;
+    border: 1px solid #423044;
+    border-radius: 4px;
+    background: #211721;
+    color: #ff80d2;
+    font-size: 10px;
+    font-weight: 600;
+}
+
+.esporte-vazio {
+    color: #777f78;
+    font-size: 11px;
+}
+
+/* Estado sem usuários */
+
+.usuarios-vazio {
+    padding: 55px 20px !important;
+    text-align: center;
+}
+
+.vazio-simbolo {
+    display: block;
+    margin-bottom: 12px;
+    color: var(--usuarios-green);
+    font-size: 34px;
+}
+
+.usuarios-vazio strong {
+    font-size: 15px;
+}
+
+.usuarios-vazio p {
+    margin: 9px 0 0;
+    color: var(--usuarios-muted);
+    font-size: 12px;
+}
+
+/* Rodapé do painel */
+
+.usuarios-painel-footer {
+    padding: 18px 25px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    border-top: 1px solid var(--usuarios-border);
+}
+
+.usuarios-painel-footer span {
+    color: var(--usuarios-muted);
+    font-size: 11px;
+}
+
+.usuarios-painel-footer a {
+    color: var(--usuarios-green);
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.usuarios-painel-footer a:hover {
+    color: #80ff69;
+}
+
+/* Celular */
+
+@media (max-width: 650px) {
+    .usuarios-navbar {
+        min-height: 72px;
+        padding: 0 5%;
+    }
+
+    .usuarios-nav {
+        gap: 15px;
+    }
+
+    .usuarios-nav a {
+        font-size: 11px;
+    }
+
+    .usuarios-main {
+        width: 92%;
+        padding: 45px 0 60px;
+    }
+
+    .usuarios-intro h1 {
+        letter-spacing: -2px;
+    }
+
+    .usuarios-painel-header {
+        padding: 20px;
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .usuarios-tabela {
+        min-width: 610px;
+    }
+
+    .usuarios-painel-footer {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+}
+
+@media (max-width: 380px) {
+    .usuarios-logo {
+        font-size: 21px;
+    }
+
+    .usuarios-nav {
+        gap: 10px;
+    }
+}
