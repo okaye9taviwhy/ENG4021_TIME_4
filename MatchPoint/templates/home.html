@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+
+{% block titulo %}MatchPoint - Início{% endblock %}
+
+{% block conteudo %}
+<style>
+    .destaque {
+        text-align: center;
+        background-color: white;
+        padding: 40px 20px;
+        border-radius: 10px;
+        max-width: 700px;
+        margin: 20px auto;
+    }
+    .destaque h1 {
+        color: #ff6600;
+    }
+    .botao {
+        display: inline-block;
+        background-color: #ff6600;
+        color: white;
+        padding: 12px 25px;
+        border-radius: 5px;
+        text-decoration: none;
+        margin-top: 15px;
+    }
+    .passos {
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 15px;
+        max-width: 700px;
+        margin: 0 auto;
+    }
+    .passo {
+        background-color: white;
+        width: 180px;
+        padding: 15px;
+        border-radius: 10px;
+        text-align: center;
+    }
+    .passo h3 {
+        color: #ff6600;
+    }
+</style>
+
+<div class="destaque">
+    <h1>Bem-vindo ao MatchPoint!</h1>
+    <p>Encontre parceiros para jogar vôlei de praia e beach tennis no Rio de Janeiro.</p>
+    <p>Chega de ficar sem dupla ou com o time incompleto.</p>
+    <a class="botao" href="/cadastro/">Criar minha conta</a>
+</div>
+
+<h2 style="text-align: center;">Como funciona</h2>
+
+<div class="passos">
+    <div class="passo">
+        <h3>1. Crie seu perfil</h3>
+        <p>Diga qual esporte você joga, seu nível e seu bairro.</p>
+    </div>
+    <div class="passo">
+        <h3>2. Encontre parceiros</h3>
+        <p>Veja jogadores perto de você com o mesmo nível.</p>
+    </div>
+    <div class="passo">
+        <h3>3. Combine o jogo</h3>
+        <p>Marque o dia, o horário e a praia. É só jogar!</p>
+    </div>
+</div>
+{% endblock %}
