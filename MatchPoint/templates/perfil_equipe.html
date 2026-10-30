@@ -1,0 +1,54 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Perfil do Jogador - MatchPoint</title>
+
+    <link rel="stylesheet" href="{% static 'equipes.css' %}">
+</head>
+
+<body>
+
+<header>
+    <a href="{% url 'home' %}">MatchPoint</a>
+    <a href="{% url 'equipes' %}">Voltar para equipes</a>
+</header>
+
+<main>
+
+    <h1>Perfil do Jogador</h1>
+
+    <div class="card">
+
+        <h2>{{ usuario.get_full_name }}</h2>
+
+        <p><strong>Usuário:</strong> {{ usuario.username }}</p>
+
+        <h3>Esportes praticados</h3>
+
+        {% for esporte in esportes %}
+
+            <p>
+                {{ esporte.esporte.nome }} -
+                Nível: {{ esporte.nivel }}
+            </p>
+
+        {% empty %}
+
+            <p>Nenhum esporte cadastrado.</p>
+
+        {% endfor %}
+
+        <a href="{% url 'equipes' %}">
+            <button>Voltar para equipes</button>
+        </a>
+
+    </div>
+
+</main>
+
+</body>
+</html>

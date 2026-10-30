@@ -1,0 +1,205 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+
+    <title>Equipes - MatchPoint</title>
+
+    <link rel="stylesheet" href="{% static 'equipes.css' %}">
+</head>
+
+<body>
+
+<header>
+    <a href="{% url 'home' %}">MatchPoint</a>
+    <a href="{% url 'encontrar_parceiros' %}">Encontrar parceiros</a>
+</header>
+
+<main>
+
+    <h1>Equipes Esportivas</h1>
+
+    <p>Crie sua equipe e encontre pessoas para jogar!</p>
+
+
+    <!-- TROCAR JOGADOR -->
+
+    <section>
+
+        <h2>Jogador atual: {{ usuario_atual.get_full_name }}</h2>
+
+        <form method="post" action="{% url 'trocar_jogador' %}">
+            {% csrf_token %}
+
+            <select name="jogador">
+                <option value="ana">Ana Silva</option>
+                <option value="pedro">Pedro Costa</option>
+                <option value="julia">Julia Martins</option>
+            </select>
+
+            <button type="submit">Trocar jogador</button>
+
+        </form>
+
+    </section>
+
+
+    <!-- CRIAR EQUIPE -->
+
+    <section>
+
+        <h2>Criar equipe</h2>
+
+        <form method="post">
+            {% csrf_token %}
+
+            <input
+                type="text"
+                name="nome"
+                placeholder="Nome da equipe"
+                required
+            >
+
+            <select name="esporte" required>
+
+                <option value="">Escolha o esporte</option>
+
+                {% for esporte in esportes %}
+
+                    <option value="{{ esporte.id }}">
+                        {{ esporte.nome }}
+                    </option>
+
+                {% endfor %}
+
+            </select>
+
+            <button type="submit">Criar equipe</button>
+
+        </form>
+
+    </section>
+
+
+    <!-- EQUIPES CADASTRADAS -->
+
+    <h2>Equipes disponíveis</h2>
+
+    {% for equipe in equipes %}
+
+        <div class="card">
+
+            <h3>{{ equipe.nome }}</h3>
+
+            <p>Esporte: {{ equipe.esporte.nome }}</p>
+
+            <p>Criador: {{ equipe.criador.get_full_name }}</p>
+
+
+            <!-- INTEGRANTES -->
+
+            <h4>Integrantes</h4>
+
+            {% for participante in participacoes %}
+
+                {% if participante.equipe_id == equipe.id %}
+
+                    {% if participante.status == "aceito" %}
+
+                        <p>
+                            {{ participante.usuario.get_full_name }}
+                        </p>
+
+                    {% endif %}
+
+                {% endif %}
+
+            {% endfor %}
+
+
+            <!-- SOLICITAR ENTRADA -->
+
+            {% if equipe.criador != usuario_atual %}
+
+                <form
+                    method="post"
+                    action="{% url 'solicitar_entrada' equipe.id %}"
+                >
+                    {% csrf_token %}
+
+                    <button type="submit">
+                        Solicitar entrada
+                    </button>
+
+                </form>
+
+            {% endif %}
+
+
+            <!-- RESPONDER SOLICITAÇÕES -->
+
+            {% if equipe.criador == usuario_atual %}
+
+                <h4>Solicitações recebidas</h4>
+
+                {% for participante in participacoes %}
+
+                    {% if participante.equipe_id == equipe.id %}
+
+                        {% if participante.status == "pendente" %}
+
+                            <p>
+                                {{ participante.usuario.get_full_name }}
+                                quer entrar na equipe.
+                            </p>
+                            <a href="{% url 'perfil_equipe' participante.usuario.id %}">
+                            <button type="button">Ver perfil</button>
+                            </a>
+
+                            <form
+                                method="post"
+                                action="{% url 'responder_solicitacao' participante.id %}"
+                            >
+                                {% csrf_token %}
+
+                                <button
+                                    type="submit"
+                                    name="resposta"
+                                    value="aceito"
+                                >
+                                    Aceitar
+                                </button>
+
+                                <button
+                                    type="submit"
+                                    name="resposta"
+                                    value="recusado"
+                                >
+                                    Recusar
+                                </button>
+
+                            </form>
+
+                        {% endif %}
+
+                    {% endif %}
+
+                {% endfor %}
+
+            {% endif %}
+
+        </div>
+
+    {% empty %}
+
+        <p>Nenhuma equipe cadastrada.</p>
+
+    {% endfor %}
+
+</main>
+
+</body>
+</html>

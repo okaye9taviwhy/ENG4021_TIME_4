@@ -126,3 +126,26 @@ class Interesse(models.Model):
 
     def __str__(self):
         return f"{self.usuario_origem} -> {self.usuario_destino}"
+
+class Equipe(models.Model):
+    nome = models.CharField(max_length=100)
+    esporte = models.ForeignKey(Esporte, on_delete=models.CASCADE)
+    criador = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE
+    )
+
+    def __str__(self):
+        return self.nome
+
+
+class ParticipacaoEquipe(models.Model):
+    equipe = models.ForeignKey(Equipe, on_delete=models.CASCADE)
+    usuario = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE
+    )
+    status = models.CharField(max_length=20, default="pendente")
+
+    def __str__(self):
+        return self.usuario.username
