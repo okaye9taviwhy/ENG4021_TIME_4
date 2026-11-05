@@ -120,6 +120,101 @@ def home(request):
     return render(request, "FigmaTela.html")
 
 
+def como_funciona(request):
+    '''
+    Esta função exibe a página que explica como o MatchPoint funciona.
+    Os textos ficam nas listas abaixo e são exibidos com {% for %}
+    na página como_funciona.html.
+    O número de jogadores vem do banco de dados e não conta os administradores.
+    '''
+    passos_jogadores = [
+        {
+            "titulo": "Crie sua conta",
+            "texto": "Cadastre-se com seu nome, e-mail e uma senha.",
+        },
+        {
+            "titulo": "Monte seu perfil",
+            "texto": "Adicione sua foto para os outros jogadores saberem com quem vão jogar.",
+        },
+        {
+            "titulo": "Encontre parceiros",
+            "texto": "Filtre os jogadores por esporte e nível e demonstre interesse em quem joga como você.",
+        },
+        {
+            "titulo": "Marque o jogo",
+            "texto": "Veja as quadras e os amistosos abertos, escolha o melhor horário e vá para a areia.",
+        },
+    ]
+
+    passos_donos = [
+        {
+            "titulo": "Crie sua conta",
+            "texto": "Cadastre-se com seu nome, e-mail e uma senha, como qualquer jogador.",
+        },
+        {
+            "titulo": "Cadastre sua rede",
+            "texto": "Informe a praia, o esporte e os horários em que a sua rede fica disponível.",
+        },
+        {
+            "titulo": "Apareça para os jogadores",
+            "texto": "Sua rede passa a ser vista por quem procura um lugar para jogar.",
+        },
+        {
+            "titulo": "Preencha os horários vagos",
+            "texto": "Receba os agendamentos e ocupe os horários que ficavam sem ninguém.",
+        },
+    ]
+
+    esportes = [
+        {
+            "nome": "Vôlei de praia",
+            "formato": "Em duplas ou 4x4",
+            "descricao": "Encontre uma dupla fixa ou complete o time que está faltando gente para jogar na areia.",
+        },
+        {
+            "nome": "Beach tennis",
+            "formato": "Em duplas ou individual",
+            "descricao": "Raquete e bolinha na areia. Encontre alguém do seu nível para bater uma bola na praia.",
+        },
+    ]
+
+    perguntas = [
+        {
+            "pergunta": "Preciso pagar para usar o MatchPoint?",
+            "resposta": "Não. Criar a conta, montar o perfil e buscar parceiros é gratuito.",
+        },
+        {
+            "pergunta": "Quais esportes posso jogar?",
+            "resposta": "O foco do MatchPoint é o vôlei de praia e o beach tennis, nas praias do Rio de Janeiro.",
+        },
+        {
+            "pergunta": "Preciso jogar bem para participar?",
+            "resposta": "Não. A busca separa os jogadores em iniciante, intermediário e avançado, para você encontrar quem joga como você.",
+        },
+        {
+            "pergunta": "Como encontro um parceiro?",
+            "resposta": "Entre na sua conta, abra Encontrar parceiros, use os filtros e clique em Tenho interesse no jogador que combina com você.",
+        },
+        {
+            "pergunta": "O que é um dono de rede?",
+            "resposta": "É quem monta ou administra uma rede na praia, como barracas, escolinhas e arenas, e quer ocupar os horários vagos.",
+        },
+        {
+            "pergunta": "Já posso cadastrar a minha rede?",
+            "resposta": "Ainda não. O cadastro de redes está em construção, mas você já pode criar sua conta.",
+        },
+    ]
+
+    contexto = {
+        "passos_jogadores": passos_jogadores,
+        "passos_donos": passos_donos,
+        "esportes": esportes,
+        "perguntas": perguntas,
+        "total_jogadores": User.objects.filter(is_superuser=False).count(),
+    }
+    return render(request, "como_funciona.html", contexto)
+
+
 @login_required
 def lista_de_usuarios(request):
     usuarios = User.objects.all().order_by("first_name")
