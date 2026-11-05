@@ -1,12 +1,15 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import update_session_auth_hash
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login
 from django.db import IntegrityError, transaction
-from django.shortcuts import render, redirect, get_object_or_404
-
-from .models import PerfilUsuario, Esporte, PerfilEsporte, Interesse
+from .models import (
+    PerfilUsuario, Esporte, PerfilEsporte,
+    Interesse, Equipe, ParticipacaoEquipe
+)
+from django.conf import settings
 
 @login_required
 def editar_usuario(request):
@@ -291,3 +294,186 @@ def amistosos(request):
         'amistosos': amistosos,
     }
     return render(request, 'amistosos.html', contexto)
+# EQUIPES ESPORTIVAS - SPRINT 7
+
+
+# Verificar se estamos testando no computador local
+def teste_local(request):
+    return settings.DEBUG and request.get_host().split(":")[0] in [
+        "127.0.0.1", "localhost"
+    ]
+
+
+# Escolher qual jogador estamos simulando
+def jogador_atual(request):
+
+    nome = request.session.get("jogador", "ana")
+
+    jogadores = {
+        "ana": ("Ana", "Silva"),
+        "pedro": ("Pedro", "Costa"),
+        "julia": ("Julia", "Martins")
+    }
+
+    if nome not in jogadores:
+        nome = "ana"
+
+    primeiro_nome, sobrenome = jogadores[nome]
+
+    usuario, criado = User.objects.get_or_create(
+        username="teste_equipe_" + nome
+    )
+
+    if criado:
+        usuario.first_name = primeiro_nome
+        usuario.last_name = sobrenome
+        usuario.set_unusable_password()
+        usuario.save()
+
+    return usuario
+
+
+# Trocar de jogador
+def trocar_jogador(request):
+
+    if not teste_local(request):
+        return redirect("home")
+
+    if request.method == "POST":
+
+        jogador = request.POST.get("jogador")
+
+        if jogador in ["ana", "pedro", "julia"]:
+            request.session["jogador"] = jogador
+
+    return redirect("equipes")
+
+
+# Página principal das equipes
+def equipes(request):
+
+    if not teste_local(request):
+        return redirect("home")
+
+    usuario = jogador_atual(request)
+
+    # Criar equipe
+    if request.method == "POST":
+
+        nome = request.POST.get("nome", "").strip()
+        esporte_id = request.POST.get("esporte")
+
+        if nome and esporte_id:
+
+            esporte = Esporte.objects.filter(id=esporte_id).first()
+
+            if esporte:
+
+                equipe = Equipe.objects.create(
+                    nome=nome,
+                    esporte=esporte,
+                    criador=usuario
+                )
+
+                # O criador entra automaticamente na equipe
+                ParticipacaoEquipe.objects.create(
+                    equipe=equipe,
+                    usuario=usuario,
+                    status="aceito"
+                )
+
+                return redirect("equipes")
+
+    lista_equipes = Equipe.objects.all()
+
+    esportes = Esporte.objects.all()
+
+    participacoes = ParticipacaoEquipe.objects.all()
+
+    return render(request, "equipes.html", {
+        "equipes": lista_equipes,
+        "esportes": esportes,
+        "participacoes": participacoes,
+        "usuario_atual": usuario
+    })
+
+
+# Solicitar entrada em uma equipe
+def solicitar_entrada(request, equipe_id):
+
+    if not teste_local(request):
+        return redirect("home")
+
+    if request.method == "POST":
+
+        usuario = jogador_atual(request)
+
+        equipe = get_object_or_404(Equipe, id=equipe_id)
+
+        if equipe.criador != usuario:
+
+            participacao = ParticipacaoEquipe.objects.filter(
+                equipe=equipe,
+                usuario=usuario
+            ).first()
+
+            if participacao is None:
+
+                ParticipacaoEquipe.objects.create(
+                    equipe=equipe,
+                    usuario=usuario,
+                    status="pendente"
+                )
+
+            elif participacao.status == "recusado":
+
+                participacao.status = "pendente"
+                participacao.save()
+
+    return redirect("equipes")
+
+
+# Aceitar ou recusar jogadores
+def responder_solicitacao(request, participacao_id):
+
+    if not teste_local(request):
+        return redirect("home")
+
+    if request.method == "POST":
+
+        usuario = jogador_atual(request)
+
+        participacao = get_object_or_404(
+            ParticipacaoEquipe,
+            id=participacao_id
+        )
+
+        resposta = request.POST.get("resposta")
+
+        # Apenas o criador pode responder
+        if participacao.equipe.criador == usuario:
+
+            if participacao.status == "pendente":
+
+                if resposta == "aceito" or resposta == "recusado":
+
+                    participacao.status = resposta
+                    participacao.save()
+
+    return redirect("equipes")
+
+# Visualizar perfil de um jogador
+def perfil_equipe(request, usuario_id):
+
+    if not teste_local(request):
+        return redirect("home")
+
+    usuario = get_object_or_404(User, id=usuario_id)
+
+    esportes = PerfilEsporte.objects.filter(usuario=usuario)
+
+    return render(request, "perfil_equipe.html", {
+        "usuario": usuario,
+        "esportes": esportes
+    })
+
