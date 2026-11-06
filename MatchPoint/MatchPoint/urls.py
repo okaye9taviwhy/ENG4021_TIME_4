@@ -30,6 +30,7 @@ urlpatterns = [
     path("editar-usuario/", views.editar_usuario, name="editar_usuario"),
     path("cadastro/", views.cadastro_usuario, name="cadastro"),
     path("usuarios/", views.lista_de_usuarios, name="lista_de_usuarios"),
+    path("jogador/<int:usuario_id>/", views.perfil_publico, name="perfil_publico"),
     path("remover-usuario/", views.remover_usuario, name="remover_usuario"),
 
     path("accounts/", include("django.contrib.auth.urls")),

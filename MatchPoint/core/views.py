@@ -224,6 +224,48 @@ def lista_de_usuarios(request):
     })
 
 
+# PERFIL PÚBLICO DO JOGADOR - SPRINT 8
+# Mostra a foto, o nome e os esportes de um jogador. O e-mail não
+# aparece, para proteger a privacidade de quem usa o site.
+
+@login_required
+def perfil_publico(request, usuario_id):
+    jogador = get_object_or_404(User, pk=usuario_id, is_active=True)
+
+    esportes = (
+        PerfilEsporte.objects
+        .filter(usuario=jogador)
+        .select_related("esporte")
+        .order_by("esporte__nome")
+    )
+
+    # Esportes que o usuário logado também pratica
+    meus_esportes = set(
+        PerfilEsporte.objects
+        .filter(usuario=request.user)
+        .values_list("esporte_id", flat=True)
+    )
+
+    interesse_enviado = Interesse.objects.filter(
+        usuario_origem=request.user,
+        usuario_destino=jogador,
+    ).exists()
+
+    interesse_recebido = Interesse.objects.filter(
+        usuario_origem=jogador,
+        usuario_destino=request.user,
+    ).exists()
+
+    return render(request, "perfil_publico.html", {
+        "jogador": jogador,
+        "esportes": esportes,
+        "meus_esportes": meus_esportes,
+        "e_voce": jogador == request.user,
+        "interesse_enviado": interesse_enviado,
+        "interesse_recebido": interesse_recebido,
+    })
+
+
 @login_required
 def remover_usuario(request):
     if request.method == "POST":
