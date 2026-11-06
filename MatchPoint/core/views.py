@@ -390,6 +390,79 @@ def amistosos(request):
         'amistosos': amistosos,
     }
     return render(request, 'amistosos.html', contexto)
+
+
+# SUGESTÕES DE PARCEIROS - SPRINT 8
+# Sugere jogadores que praticam os mesmos esportes que o usuário,
+# com o nível mais parecido primeiro.
+
+NIVEIS = ["Iniciante", "Intermediário", "Avançado"]
+MAXIMO_SUGESTOES = 12
+
+
+@login_required
+def sugestoes_parceiros(request):
+    meus_esportes = (
+        PerfilEsporte.objects
+        .filter(usuario=request.user)
+        .select_related("esporte")
+        .order_by("esporte__nome")
+    )
+
+    # Nível do usuário em cada esporte
+    meus_niveis = {}
+    for perfil in meus_esportes:
+        meus_niveis[perfil.esporte_id] = perfil.nivel
+
+    perfis = (
+        PerfilEsporte.objects
+        .filter(esporte_id__in=list(meus_niveis), usuario__is_active=True)
+        .exclude(usuario=request.user)
+        .select_related("usuario__perfil", "esporte")
+    )
+
+    # Junta os esportes em comum de cada jogador
+    jogadores = {}
+
+    for perfil in perfis:
+        meu_nivel = meus_niveis[perfil.esporte_id]
+
+        if perfil.nivel not in NIVEIS or meu_nivel not in NIVEIS:
+            continue
+
+        diferenca = abs(NIVEIS.index(perfil.nivel) - NIVEIS.index(meu_nivel))
+
+        # Só sugere quem está no mesmo nível ou em um nível vizinho
+        if diferenca > 1:
+            continue
+
+        if perfil.usuario_id not in jogadores:
+            jogadores[perfil.usuario_id] = {
+                "usuario": perfil.usuario,
+                "esportes": [],
+                "diferenca": diferenca,
+            }
+
+        jogador = jogadores[perfil.usuario_id]
+        jogador["esportes"].append(perfil)
+        jogador["diferenca"] = min(jogador["diferenca"], diferenca)
+
+    sugestoes = list(jogadores.values())
+
+    # Primeiro quem tem o mesmo nível, depois quem tem mais esportes
+    # em comum, e por último em ordem alfabética
+    sugestoes.sort(key=lambda jogador: (
+        jogador["diferenca"],
+        -len(jogador["esportes"]),
+        jogador["usuario"].get_full_name().lower(),
+    ))
+
+    return render(request, "sugestoes.html", {
+        "meus_esportes": meus_esportes,
+        "sugestoes": sugestoes[:MAXIMO_SUGESTOES],
+    })
+
+
 # EQUIPES ESPORTIVAS - SPRINT 7
 
 

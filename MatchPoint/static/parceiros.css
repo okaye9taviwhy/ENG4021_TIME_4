@@ -115,6 +115,20 @@
     border-color: var(--p-green);
 }
 
+/* Link para as sugestões de parceiros */
+
+.parceiros-sugestoes-link {
+    display: inline-block;
+    margin: -8px 0 28px;
+    color: var(--p-green);
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.parceiros-sugestoes-link:hover {
+    text-decoration: underline !important;
+}
+
 .parceiros-botao {
     padding: 12px 24px;
     background: var(--p-green);

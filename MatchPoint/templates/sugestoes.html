@@ -1,0 +1,96 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MatchPoint — Sugestões de parceiros</title>
+    <link rel="stylesheet" href="{% static 'estilo.css' %}">
+    <link rel="stylesheet" href="{% static 'parceiros.css' %}">
+    <link rel="stylesheet" href="{% static 'sugestoes.css' %}">
+</head>
+
+<body class="parceiros-page">
+    <header class="parceiros-navbar">
+        <a href="{% url 'home' %}" class="parceiros-logo">
+            match<span>point</span><b>.</b>
+        </a>
+
+        <nav class="parceiros-nav">
+            <a href="{% url 'home' %}">Início</a>
+            <a href="{% url 'encontrar_parceiros' %}" class="parceiros-nav-ativo">Encontrar parceiros</a>
+            <a href="{% url 'agendar_quadras' %}">Agendar quadras</a>
+            <a href="{% url 'amistosos' %}">Amistosos</a>
+            <a href="{% url 'como_funciona' %}">Como funciona</a>
+            <a href="{% url 'editar_usuario' %}">Meu perfil</a>
+        </nav>
+    </header>
+
+    <main class="parceiros-main">
+        <section class="parceiros-intro">
+            <span class="parceiros-eyebrow">PARA VOCÊ</span>
+            <h1>Sugestões de parceiros<span>.</span></h1>
+            <p>Jogadores dos mesmos esportes que você, com o nível mais parecido primeiro.</p>
+        </section>
+
+        {% if meus_esportes %}
+            <div class="sugestoes-meus">
+                <span>Seus esportes:</span>
+                {% for perfil in meus_esportes %}
+                    <span class="parceiro-tag">{{ perfil.esporte.nome }} · {{ perfil.nivel }}</span>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <section class="parceiros-grade">
+            {% for sugestao in sugestoes %}
+                {% with jogador=sugestao.usuario %}
+                    <article class="parceiro-card">
+                        <div class="parceiro-topo">
+                            <div class="parceiro-avatar sugestoes-avatar">
+                                {% if jogador.perfil.foto %}
+                                    <img src="{{ jogador.perfil.foto }}" alt="">
+                                {% else %}
+                                    <span>{{ jogador.get_full_name|default:jogador.username|first|upper }}</span>
+                                {% endif %}
+                            </div>
+
+                            <h3>{{ jogador.get_full_name|default:jogador.username }}</h3>
+                        </div>
+
+                        {% if sugestao.diferenca == 0 %}
+                            <span class="sugestoes-selo sugestoes-selo-mesmo">Mesmo nível que você</span>
+                        {% else %}
+                            <span class="sugestoes-selo">Nível próximo do seu</span>
+                        {% endif %}
+
+                        <div class="parceiro-esportes">
+                            {% for perfil in sugestao.esportes %}
+                                <span class="parceiro-tag">{{ perfil.esporte.nome }} · {{ perfil.nivel }}</span>
+                            {% endfor %}
+                        </div>
+
+                        <form method="post" action="{% url 'demonstrar_interesse' jogador.id %}">
+                            {% csrf_token %}
+                            <button type="submit" class="parceiros-botao">
+                                Tenho interesse
+                            </button>
+                        </form>
+                    </article>
+                {% endwith %}
+            {% empty %}
+                <div class="parceiros-vazio-geral">
+                    {% if meus_esportes %}
+                        <strong>Nenhum jogador compatível por enquanto</strong>
+                        <p>Ainda não há jogadores dos seus esportes em um nível parecido com o seu.</p>
+                    {% else %}
+                        <strong>Seu perfil ainda não tem esportes</strong>
+                        <p>As sugestões usam os esportes e o nível do seu perfil.</p>
+                    {% endif %}
+                    <a href="{% url 'encontrar_parceiros' %}" class="parceiros-botao">Ver todos os jogadores</a>
+                </div>
+            {% endfor %}
+        </section>
+    </main>
+</body>
+</html>
