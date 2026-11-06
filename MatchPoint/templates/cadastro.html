@@ -1,60 +1,142 @@
-
 {% load static %}
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MatchPoint - Cadastro</title>
+    <title>MatchPoint - Criar Conta</title>
     <link rel="stylesheet" href="{% static 'cadastro.css' %}">
 </head>
 <body>
+
     <a class="inicio" href="{% url 'login' %}">← Voltar ao login</a>
 
-    <main class="centro">
-        <h1 class="titulo">MatchPoint</h1>
+    <div class="container">
+        <h1>MatchPoint 🎾</h1>
+        <p class="subtitulo">Encontre parceiros de jogo, e muito mais!</p>
 
-        <form class="cartao" method="post" action="{% url 'cadastro' %}">
+        <!-- Mensagem de erro caso o back-end envie -->
+        {% if erro %}
+            <p class="texto" style="color: #ff4d4d; font-weight: bold;">{{ erro }}</p>
+        {% endif %}
+
+        <form method="POST" action="{% url 'cadastro' %}">
             {% csrf_token %}
 
-            <h2>Criar conta</h2>
-            <p class="texto">Encontre pessoas para praticar seu esporte favorito.</p>
+            <fieldset>
+                <legend>Dados de Acesso</legend>
+                
+                <div class="campo">
+                    <label for="username">Nome de Usuário (Username):</label>
+                    <input type="text" id="username" name="username" placeholder="Ex: joao_tenis" autocomplete="username" required>
+                </div>
 
-            {% if erro %}
-                <p class="texto">{{ erro }}</p>
-            {% endif %}
+                <div class="campo">
+                    <label for="email">E-mail</label>
+                    <input type="email" id="email" name="email" placeholder="seu@email.com" autocomplete="email" required>
+                </div>
 
-            <div class="campo">
-                <label for="nome">Nome completo</label>
-                <input type="text" id="nome" name="nome"
-                       autocomplete="name" required>
+                <div class="campo">
+                    <label for="senha">Senha:</label>
+                    <input type="password" id="senha" name="senha" placeholder="Crie uma senha segura" autocomplete="new-password" required>
+                </div>
+
+                <div class="campo">
+                    <label for="confirmar_senha">Confirmar senha:</label>
+                    <input type="password" id="confirmar_senha" name="confirmar_senha" placeholder="Repita a senha" autocomplete="new-password" required>
+                </div>
+            </fieldset>
+
+            <fieldset>
+                <legend>Sobre Você</legend>
+
+                <div class="campo">
+                    <label for="nome">Nome Completo:</label>
+                    <input type="text" id="nome" name="nome" placeholder="Seu nome" autocomplete="name" required>
+                </div>
+
+                <div class="campo">
+                    <label for="idade">Idade:</label>
+                    <input type="number" id="idade" name="idade" min="10" max="100" placeholder="Ex: 25" required>
+                </div>
+
+                <div class="campo">
+                    <label for="tempo_jogo">Há quanto tempo você joga?</label>
+                    <select id="tempo_jogo" name="tempo_jogo" required>
+                        <option value="">Selecione uma opção...</option>
+                        <option value="iniciante">Estou começando agora</option>
+                        <option value="menos_1_ano">Menos de 1 ano</option>
+                        <option value="1_a_3_anos">De 1 a 3 anos</option>
+                        <option value="mais_3_anos">Mais de 3 anos</option>
+                    </select>
+                </div>
+            </fieldset>
+
+            <fieldset>
+                <legend>Esportes de Interesse</legend>
+                <p class="aviso-deck">Selecione os esportes que você pratica ou quer praticar:</p>
+
+                <div class="deck-esportes">
+                    <label class="card-esporte">
+                        <input type="checkbox" name="esportes" value="beach_tennis"> Beach Tennis
+                    </label>
+
+                    <label class="card-esporte">
+                        <input type="checkbox" name="esportes" value="tenis"> Tênis
+                    </label>
+
+                    <label class="card-esporte">
+                        <input type="checkbox" name="esportes" value="futevolei"> Futevôlei
+                    </label>
+
+                    <label class="card-esporte">
+                        <input type="checkbox" name="esportes" value="volei"> Vôlei
+                    </label>
+
+                    <label class="card-esporte">
+                        <input type="checkbox" name="esportes" value="padel"> Padel
+                    </label>
+
+                    <label class="card-esporte">
+                        <input type="checkbox" name="esportes" value="futebol"> Futebol / Society
+                    </label>
+                </div>
+            </fieldset>
+
+            <fieldset>
+                <legend>Disponibilidade</legend>
+
+                <div class="campo">
+                    <label>Dias da semana disponíveis:</label>
+                    <div class="opcoes-linha">
+                        <label><input type="checkbox" name="dias" value="segunda"> Seg</label>
+                        <label><input type="checkbox" name="dias" value="terca"> Ter</label>
+                        <label><input type="checkbox" name="dias" value="quarta"> Qua</label>
+                        <label><input type="checkbox" name="dias" value="quinta"> Qui</label>
+                        <label><input type="checkbox" name="dias" value="sexta"> Sex</label>
+                        <label><input type="checkbox" name="dias" value="sabado"> Sáb</label>
+                        <label><input type="checkbox" name="dias" value="domingo"> Dom</label>
+                    </div>
+                </div>
+
+                <div class="campo">
+                    <label>Horários de preferência:</label>
+                    <div class="opcoes-linha">
+                        <label><input type="checkbox" name="horarios" value="manha"> Manhã</label>
+                        <label><input type="checkbox" name="horarios" value="tarde"> Tarde</label>
+                        <label><input type="checkbox" name="horarios" value="noite"> Noite</label>
+                    </div>
+                </div>
+            </fieldset>
+
+            <!-- Botões de Finalizar e Cancelar -->
+            <div class="botoes" style="margin-top: 20px;">
+                <button type="submit" class="botao">Criar minha conta no MatchPoint</button>
+                <a href="{% url 'login' %}" class="botao botao-cancelar" style="display: inline-block; text-align: center; text-decoration: none;">Já tenho uma conta</a>
             </div>
 
-            <div class="campo">
-                <label for="email">E-mail</label>
-                <input type="email" id="email" name="email"
-                       autocomplete="email" required>
-            </div>
-
-            <div class="campo">
-                <label for="senha">Senha</label>
-                <input type="password" id="senha" name="senha"
-                       autocomplete="new-password" required>
-            </div>
-
-            <div class="campo">
-                <label for="confirmar_senha">Confirmar senha</label>
-                <input type="password" id="confirmar_senha"
-                       name="confirmar_senha"
-                       autocomplete="new-password" required>
-            </div>
-
-            <div class="botoes">
-                <button type="submit" class="botao">Criar conta</button>
-                <a href="{% url 'login' %}"
-                   class="botao botao-cancelar">Já tenho uma conta</a>
-            </div>
         </form>
-    </main>
+    </div>
+
 </body>
 </html>

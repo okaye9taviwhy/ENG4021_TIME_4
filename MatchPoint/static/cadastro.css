@@ -1,0 +1,146 @@
+/* Configuração geral de fundo escuro */
+body {
+    background-color: #121212;
+    color: #ffffff;
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 20px;
+}
+
+/* Container centralizado com a borda neon característica */
+.container {
+    background-color: #1a1a1a;
+    border: 2px solid #39ff14; /* Borda verde neon */
+    box-shadow: 0 0 15px rgba(57, 255, 20, 0.3);
+    border-radius: 16px;
+    padding: 30px;
+    max-width: 600px;
+    margin: 30px auto;
+}
+
+/* Títulos */
+h1 {
+    color: #39ff14;
+    text-align: center;
+    margin-bottom: 5px;
+}
+
+.subtitulo {
+    text-align: center;
+    color: #b0b0b0;
+    margin-bottom: 25px;
+}
+
+/* Estilização dos Fieldsets (Blocos de perguntas) */
+fieldset {
+    border: 1px solid #333;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 20px;
+    background-color: #161616;
+}
+
+legend {
+    color: #39ff14;
+    font-weight: bold;
+    padding: 0 8px;
+}
+
+/* Campos de inputs e selects */
+.campo {
+    margin-bottom: 12px;
+}
+
+.campo label {
+    display: block;
+    margin-bottom: 5px;
+    color: #ddd;
+    font-size: 0.9rem;
+}
+
+.campo input[type="text"],
+.campo input[type="email"],
+.campo input[type="password"],
+.campo input[type="number"],
+.campo select {
+    width: 100%;
+    padding: 10px;
+    background-color: #262626;
+    border: 1px solid #444;
+    border-radius: 6px;
+    color: #fff;
+    box-sizing: border-box;
+}
+
+.campo input:focus, .campo select:focus {
+    border-color: #39ff14;
+    outline: none;
+}
+
+/* Grade de Esportes e Opções em Linha */
+.deck-esportes {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+.card-esporte, .opcoes-linha label {
+    color: #ccc;
+    font-size: 0.9rem;
+    cursor: pointer;
+}
+
+.opcoes-linha {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 5px;
+}
+
+/* Botões principais (Rosa Choque igual ao login) */
+.botao {
+    background-color: #ff2a85;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 12px;
+    width: 100%;
+    font-weight: bold;
+    font-size: 1rem;
+    cursor: pointer;
+    text-align: center;
+    display: block;
+    box-sizing: border-box;
+    transition: background 0.2s;
+}
+
+.botao:hover {
+    background-color: #e02072;
+}
+
+/* Botão secundário / Cancelar */
+.botao-cancelar {
+    background-color: transparent;
+    border: 1px solid #555;
+    color: #aaa;
+    margin-top: 10px;
+    text-decoration: none;
+}
+
+.botao-cancelar:hover {
+    background-color: #222;
+    color: #fff;
+}
+
+/* Link de voltar no topo */
+.inicio {
+    color: #39ff14;
+    text-decoration: none;
+    font-weight: bold;
+    display: inline-block;
+    margin-bottom: 10px;
+}
+
+.inicio:hover {
+    text-decoration: underline;
+}
