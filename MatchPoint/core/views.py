@@ -5,6 +5,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login
 from django.db import IntegrityError, transaction
+from django.db.models import Q
 from .models import (
     PerfilUsuario, Esporte, PerfilEsporte,
     Interesse, Equipe, ParticipacaoEquipe,
@@ -256,13 +257,13 @@ def encontrar_parceiros(request):
     ]:
         jogadores = jogadores.filter(nivel=nivel_selecionado)
 
-    if search_query:
+    # Cada palavra da busca precisa aparecer no nome, no sobrenome
+    # ou no usuário. Assim "Ana Silva" encontra a Ana Silva.
+    for palavra in search_query.split():
         jogadores = jogadores.filter(
-            usuario__first_name__icontains=search_query
-        ) | jogadores.filter(
-            usuario__last_name__icontains=search_query
-        ) | jogadores.filter(
-            usuario__username__icontains=search_query
+            Q(usuario__first_name__icontains=palavra)
+            | Q(usuario__last_name__icontains=palavra)
+            | Q(usuario__username__icontains=palavra)
         )
 
     return render(request, "encontrar_parceiros.html", {
