@@ -61,6 +61,16 @@ urlpatterns = [
     views.perfil_equipe,
     name="perfil_equipe"
     ),
+    path(
+        "conversas/",
+        views.minhas_conversas,
+        name="minhas_conversas"
+    ),
+    path(
+        "chat/<int:usuario_id>/",
+        views.chat,
+        name="chat"
+    ),
 ]
 
 

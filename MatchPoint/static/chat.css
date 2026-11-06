@@ -1,0 +1,128 @@
+body {
+    margin: 0;
+    background-color: #101010;
+    color: white;
+    font-family: Arial, sans-serif;
+}
+
+header {
+    background-color: #181818;
+    padding: 25px 8%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+header a {
+    color: white;
+    text-decoration: none;
+    margin-right: 20px;
+}
+
+.logo {
+    font-size: 25px;
+    font-weight: bold;
+}
+
+.logo span {
+    color: #39ff14;
+}
+
+main {
+    max-width: 900px;
+    margin: 40px auto;
+    padding: 20px;
+}
+
+h1 {
+    color: #39ff14;
+}
+
+.caixa {
+    background-color: #202020;
+    padding: 25px;
+    border-radius: 10px;
+    margin-bottom: 25px;
+}
+
+.jogador {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    margin: 10px 0;
+    background-color: #303030;
+    border-radius: 8px;
+}
+
+.jogador a {
+    color: #39ff14;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+button {
+    background-color: #39ff14;
+    color: black;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+button:hover {
+    background-color: #2dcc10;
+}
+
+select, input {
+    padding: 12px;
+    border-radius: 6px;
+    border: none;
+    margin: 5px;
+}
+
+.mensagens {
+    min-height: 250px;
+    padding: 15px;
+}
+
+.minha-mensagem {
+    background-color: #245c2a;
+    padding: 15px;
+    margin: 15px 0 15px auto;
+    border-radius: 12px;
+    max-width: 70%;
+}
+
+.outra-mensagem {
+    background-color: #383838;
+    padding: 15px;
+    margin: 15px auto 15px 0;
+    border-radius: 12px;
+    max-width: 70%;
+}
+
+.minha-mensagem p,
+.outra-mensagem p {
+    overflow-wrap: anywhere;
+}
+
+small {
+    color: #bbb;
+}
+
+.form-mensagem {
+    display: flex;
+    gap: 10px;
+}
+
+.form-mensagem input {
+    flex: 1;
+    min-width: 0;
+}
+
+.aviso {
+    color: #aaa;
+    font-size: 13px;
+}
