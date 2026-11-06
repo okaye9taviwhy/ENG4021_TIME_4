@@ -1,0 +1,132 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Minhas Conversas - MatchPoint</title>
+
+    <link rel="stylesheet" href="{% static 'chat.css' %}">
+</head>
+
+<body>
+
+<header>
+    <a href="{% url 'home' %}" class="logo">
+        match<span>point.</span>
+    </a>
+
+    <nav>
+        <a href="{% url 'home' %}">Início</a>
+        <a href="{% url 'equipes' %}">Equipes</a>
+        <a href="{% url 'minhas_conversas' %}">Mensagens</a>
+    </nav>
+</header>
+
+<main>
+
+    <h1>Minhas Conversas</h1>
+
+    <p>
+        Jogador atual:
+        <strong>{{ usuario_atual.get_full_name }}</strong>
+    </p>
+
+    <!-- TROCAR JOGADOR -->
+
+    <section class="caixa">
+
+        <h2>Modo de demonstração</h2>
+
+        <form method="post" action="{% url 'trocar_jogador' %}">
+            {% csrf_token %}
+            <input type="hidden" name="origem" value="conversas">
+
+            <select name="jogador">
+                <option value="ana">Ana Silva</option>
+                <option value="pedro">Pedro Costa</option>
+                <option value="julia">Julia Martins</option>
+            </select>
+
+            <button type="submit">Trocar jogador</button>
+        </form>
+
+        <p class="aviso">
+            Depois de trocar, clique novamente em Mensagens.
+        </p>
+
+    </section>
+
+    <!-- INICIAR CONVERSA -->
+
+    <section class="caixa">
+
+        <h2>Iniciar uma conversa</h2>
+
+        {% for jogador in jogadores %}
+
+            <div class="jogador">
+
+                <span>{{ jogador.get_full_name }}</span>
+
+                <a href="{% url 'chat' jogador.id %}">
+                    Conversar
+                </a>
+
+            </div>
+
+        {% empty %}
+
+            <p>Nenhum outro jogador de teste cadastrado.</p>
+
+        {% endfor %}
+
+    </section>
+
+    <!-- CONVERSAS EXISTENTES -->
+
+    <section class="caixa">
+
+        <h2>Conversas existentes</h2>
+
+        {% for conversa in conversas %}
+
+            <div class="jogador">
+
+                {% if conversa.match.usuario_1 == usuario_atual %}
+
+                    <span>
+                        {{ conversa.match.usuario_2.get_full_name }}
+                    </span>
+
+                    <a href="{% url 'chat' conversa.match.usuario_2.id %}">
+                        Abrir conversa
+                    </a>
+
+                {% else %}
+
+                    <span>
+                        {{ conversa.match.usuario_1.get_full_name }}
+                    </span>
+
+                    <a href="{% url 'chat' conversa.match.usuario_1.id %}">
+                        Abrir conversa
+                    </a>
+
+                {% endif %}
+
+            </div>
+
+        {% empty %}
+
+            <p>Você ainda não possui conversas.</p>
+
+        {% endfor %}
+
+    </section>
+
+</main>
+
+</body>
+</html>

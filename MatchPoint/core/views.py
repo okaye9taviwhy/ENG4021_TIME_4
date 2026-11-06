@@ -7,7 +7,8 @@ from django.contrib.auth import authenticate, login
 from django.db import IntegrityError, transaction
 from .models import (
     PerfilUsuario, Esporte, PerfilEsporte,
-    Interesse, Equipe, ParticipacaoEquipe
+    Interesse, Equipe, ParticipacaoEquipe,
+    Match, Conversa, Mensagem
 )
 from django.conf import settings
 
@@ -441,6 +442,9 @@ def trocar_jogador(request):
         if jogador in ["ana", "pedro", "julia"]:
             request.session["jogador"] = jogador
 
+    if request.POST.get("origem") == "conversas":
+        return redirect("minhas_conversas")
+
     return redirect("equipes")
 
 
@@ -572,3 +576,105 @@ def perfil_equipe(request, usuario_id):
         "esportes": esportes
     })
 
+
+# Mensagens
+# Mostrar as conversas do jogador
+def minhas_conversas(request):
+
+    if not teste_local(request):
+        return redirect("home")
+
+    usuario = jogador_atual(request)
+
+    # Buscar as conversas existentes
+    todas_conversas = Conversa.objects.all()
+
+    minhas = []
+
+    for conversa in todas_conversas:
+
+        match = conversa.match
+
+        if match.usuario_1 == usuario:
+            minhas.append(conversa)
+
+        elif match.usuario_2 == usuario:
+            minhas.append(conversa)
+
+    # Jogadores disponíveis para iniciar uma conversa
+    jogadores = User.objects.filter(
+        username__startswith="teste_equipe_"
+    ).exclude(id=usuario.id)
+
+    return render(request, "conversas.html", {
+        "conversas": minhas,
+        "jogadores": jogadores,
+        "usuario_atual": usuario
+    })
+
+
+# Abrir uma conversa e enviar mensagens
+def chat(request, usuario_id):
+
+    if not teste_local(request):
+        return redirect("home")
+
+    usuario = jogador_atual(request)
+
+    destinatario = get_object_or_404(User, id=usuario_id)
+    if not destinatario.username.startswith("teste_equipe_"):
+        return redirect("minhas_conversas")
+
+    # Impedir conversa consigo mesmo
+    if usuario == destinatario:
+        return redirect("minhas_conversas")
+
+    # Buscar um match existente entre os dois
+    match = Match.objects.filter(
+        usuario_1=usuario,
+        usuario_2=destinatario
+    ).first()
+
+    if match is None:
+        match = Match.objects.filter(
+            usuario_1=destinatario,
+            usuario_2=usuario
+        ).first()
+
+    # Se ainda não existe, criar
+    if match is None:
+        match = Match.objects.create(
+            usuario_1=usuario,
+            usuario_2=destinatario
+        )
+
+    # Buscar ou criar a conversa
+    conversa, criada = Conversa.objects.get_or_create(
+        match=match
+    )
+
+    # Enviar mensagem
+    if request.method == "POST":
+
+        texto = request.POST.get("texto", "").strip()
+
+        if texto:
+
+            Mensagem.objects.create(
+                conversa=conversa,
+                remetente=usuario,
+                texto=texto
+            )
+
+            return redirect("chat", usuario_id=destinatario.id)
+
+    # Buscar mensagens antigas
+    mensagens = Mensagem.objects.filter(
+        conversa=conversa
+    )
+
+    return render(request, "chat.html", {
+        "destinatario": destinatario,
+        "usuario_atual": usuario,
+        "mensagens": mensagens
+    })

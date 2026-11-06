@@ -1,0 +1,106 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Chat - MatchPoint</title>
+
+    <link rel="stylesheet" href="{% static 'chat.css' %}">
+</head>
+
+<body>
+
+<header>
+    <a href="{% url 'home' %}" class="logo">
+        match<span>point.</span>
+    </a>
+
+    <nav>
+        <a href="{% url 'minhas_conversas' %}">
+            Voltar para conversas
+        </a>
+    </nav>
+</header>
+
+<main>
+
+    <h1>Conversa com {{ destinatario.get_full_name }}</h1>
+
+    <p>
+        Você está conversando como:
+        <strong>{{ usuario_atual.get_full_name }}</strong>
+    </p>
+
+    <section class="caixa">
+
+        <h2>Mensagens</h2>
+
+        <div class="mensagens">
+
+            {% for mensagem in mensagens %}
+
+                {% if mensagem.remetente == usuario_atual %}
+
+                    <div class="minha-mensagem">
+
+                        <strong>Você</strong>
+
+                        <p>{{ mensagem.texto }}</p>
+
+                        <small>
+                            {{ mensagem.data_hora|date:"d/m/Y H:i" }}
+                        </small>
+
+                    </div>
+
+                {% else %}
+
+                    <div class="outra-mensagem">
+
+                        <strong>
+                            {{ mensagem.remetente.get_full_name }}
+                        </strong>
+
+                        <p>{{ mensagem.texto }}</p>
+
+                        <small>
+                            {{ mensagem.data_hora|date:"d/m/Y H:i" }}
+                        </small>
+
+                    </div>
+
+                {% endif %}
+
+            {% empty %}
+
+                <p>Nenhuma mensagem ainda. Comece a conversa!</p>
+
+            {% endfor %}
+
+        </div>
+
+        <!-- ENVIAR MENSAGEM -->
+
+        <form method="post" class="form-mensagem">
+            {% csrf_token %}
+
+            <input
+                type="text"
+                name="texto"
+                placeholder="Digite sua mensagem..."
+                maxlength="1000"
+                required
+            >
+
+            <button type="submit">Enviar</button>
+
+        </form>
+
+    </section>
+
+</main>
+
+</body>
+</html>
