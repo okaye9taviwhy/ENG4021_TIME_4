@@ -1,0 +1,93 @@
+{% load static tz %}
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MatchPoint — {{ jogador.get_full_name|default:jogador.username }}</title>
+    <link rel="stylesheet" href="{% static 'estilo.css' %}">
+    <link rel="stylesheet" href="{% static 'parceiros.css' %}">
+    <link rel="stylesheet" href="{% static 'perfil_publico.css' %}">
+</head>
+
+<body class="parceiros-page">
+    <header class="parceiros-navbar">
+        <a href="{% url 'home' %}" class="parceiros-logo">
+            match<span>point</span><b>.</b>
+        </a>
+
+        <nav class="parceiros-nav">
+            <a href="{% url 'home' %}">Início</a>
+            <a href="{% url 'encontrar_parceiros' %}" class="parceiros-nav-ativo">Encontrar parceiros</a>
+            <a href="{% url 'agendar_quadras' %}">Agendar quadras</a>
+            <a href="{% url 'amistosos' %}">Amistosos</a>
+            <a href="{% url 'como_funciona' %}">Como funciona</a>
+            <a href="{% url 'editar_usuario' %}">Meu perfil</a>
+        </nav>
+    </header>
+
+    <main class="parceiros-main perfil-main">
+        <a href="{% url 'encontrar_parceiros' %}" class="perfil-voltar">← Encontrar parceiros</a>
+
+        <article class="perfil-cartao">
+            <div class="perfil-topo">
+                <div class="parceiro-avatar perfil-avatar">
+                    {% if jogador.perfil.foto %}
+                        <img src="{{ jogador.perfil.foto }}" alt="Foto de {{ jogador.get_full_name|default:jogador.username }}">
+                    {% else %}
+                        <span>{{ jogador.get_full_name|default:jogador.username|first|upper }}</span>
+                    {% endif %}
+                </div>
+
+                <div>
+                    <span class="parceiros-eyebrow">JOGADOR</span>
+                    <h1>{{ jogador.get_full_name|default:jogador.username }}<span>.</span></h1>
+                    {% timezone "America/Sao_Paulo" %}
+                        <p class="perfil-desde">No MatchPoint desde {{ jogador.date_joined|date:"m/Y" }}</p>
+                    {% endtimezone %}
+                </div>
+            </div>
+
+            {% if interesse_recebido and not e_voce %}
+                <p class="perfil-aviso">
+                    {{ jogador.first_name|default:jogador.username }} tem interesse em jogar com você!
+                </p>
+            {% endif %}
+
+            <section class="perfil-secao">
+                <h2>Esportes</h2>
+
+                {% if esportes %}
+                    <ul class="perfil-esportes">
+                        {% for perfil in esportes %}
+                            <li class="perfil-esporte {% if not e_voce and perfil.esporte_id in meus_esportes %}perfil-esporte-comum{% endif %}">
+                                <strong>{{ perfil.esporte.nome }}</strong>
+                                <span>{{ perfil.nivel }}</span>
+                                {% if not e_voce and perfil.esporte_id in meus_esportes %}
+                                    <small>Você também joga</small>
+                                {% endif %}
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <p class="perfil-vazio">Ainda não adicionou esportes ao perfil.</p>
+                {% endif %}
+            </section>
+
+            <div class="perfil-acoes">
+                {% if e_voce %}
+                    <span class="perfil-selo">Este é o seu perfil</span>
+                    <a href="{% url 'editar_usuario' %}" class="parceiros-botao">Editar meu perfil</a>
+                {% elif interesse_enviado %}
+                    <span class="perfil-selo perfil-selo-verde">Interesse enviado ✓</span>
+                {% else %}
+                    <form method="post" action="{% url 'demonstrar_interesse' jogador.id %}">
+                        {% csrf_token %}
+                        <button type="submit" class="parceiros-botao">Tenho interesse</button>
+                    </form>
+                {% endif %}
+            </div>
+        </article>
+    </main>
+</body>
+</html>

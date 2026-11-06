@@ -163,6 +163,16 @@
     font-size: 18px;
 }
 
+/* O nome do jogador abre o perfil dele */
+
+.parceiro-nome-link {
+    color: var(--p-text);
+}
+
+.parceiro-nome-link:hover {
+    color: var(--p-green);
+}
+
 .parceiro-avatar {
     width: 48px;
     height: 48px;

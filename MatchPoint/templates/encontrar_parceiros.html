@@ -76,7 +76,9 @@
                         </div>
 
                         <h3>
-                            {{ jogador.usuario.get_full_name|default:jogador.usuario.username }}
+                            <a href="{% url 'perfil_publico' jogador.usuario.id %}" class="parceiro-nome-link">
+                                {{ jogador.usuario.get_full_name|default:jogador.usuario.username }}
+                            </a>
                         </h3>
                     </div>
 
