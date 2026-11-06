@@ -33,7 +33,9 @@
                     <button type="submit">Sair</button>
                 </form>
             {% else %}
-                <a href="{% url 'login' %}" class="home-login">Entrar</a>
+            <a href="{% url 'login_usuario' %}" class="home-login">
+                Entrar
+            </a>
                 <a href="{% url 'cadastro' %}" class="home-signup">
                     Criar conta <span aria-hidden="true">↗</span>
                 </a>
@@ -61,7 +63,7 @@
                 </p>
 
                 <div class="hero-buttons">
-                    <a href="{% url 'cadastro' %}" class="home-signup hero-cta">
+                    <a href="{% url 'encontrar_parceiros' %}" class="home-signup hero-cta">
                         Encontrar meu time <span aria-hidden="true">→</span>
                     </a>
 
@@ -129,7 +131,7 @@
                         Conheça jogadores, encontre pessoas
                         do seu nível e forme duplas ou times.
                     </p>
-                    <a href="{% url 'cadastro' %}" class="feature-link">
+                    <a href="{% url 'encontrar_parceiros' %}" class="feature-link">
                         Encontrar jogadores <span>→</span>
                     </a>
                 </article>
@@ -142,7 +144,7 @@
                         Reúna jogadores e organize partidas
                         com horários e regras definidos.
                     </p>
-                    <a href="{% url 'cadastro' %}" class="feature-link">
+                    <a href="{% url 'amistosos' %}" class="feature-link">
                         Organizar partidas <span>→</span>
                     </a>
                 </article>
@@ -155,7 +157,7 @@
                         Planeje onde jogar e encontre espaços
                         esportivos para sua próxima partida.
                     </p>
-                    <a href="{% url 'cadastro' %}" class="feature-link">
+                    <a href="{% url 'agendar_quadras' %}" class="feature-link">
                         Planejar meu jogo <span>→</span>
                     </a>
                 </article>
