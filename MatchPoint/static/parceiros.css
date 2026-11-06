@@ -91,6 +91,24 @@
     font-size: 18px;
 }
 
+/* Link para a página de interesses */
+
+.parceiros-intro-link {
+    display: inline-block;
+    margin: -12px 0 32px;
+    padding: 10px 20px;
+    border: 1px solid var(--p-green);
+    border-radius: 999px;
+    color: var(--p-green);
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.parceiros-intro-link:hover {
+    background: var(--p-green);
+    color: #0b0d0c;
+}
+
 /* Busca */
 
 .parceiros-filtros {

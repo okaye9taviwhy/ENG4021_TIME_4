@@ -1,0 +1,110 @@
+/* ===== MATCHPOINT: MEUS INTERESSES ===== */
+/* Usa o cabeçalho, as cores e os cartões de parceiros.css */
+
+.interesses-avatar {
+    display: grid;
+    place-items: center;
+    color: #0b0d0c;
+    font-size: 20px;
+    font-weight: 900;
+}
+
+.interesses-avisos {
+    margin-bottom: 28px;
+    padding: 14px 20px;
+    border: 1px solid var(--p-green);
+    border-radius: 16px;
+}
+
+.interesses-avisos p {
+    margin: 0;
+}
+
+.interesses-secao {
+    margin-bottom: 48px;
+}
+
+.interesses-secao h2 {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px;
+    margin: 0 0 20px;
+    font-size: 24px;
+    font-weight: 800;
+}
+
+.interesses-contador {
+    padding: 4px 12px;
+    background: var(--p-pink);
+    border-radius: 999px;
+    color: var(--p-text);
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.interesses-data {
+    color: var(--p-muted);
+    font-size: 12px;
+}
+
+.interesses-acoes {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin: 0;
+}
+
+.interesses-botao-recusar {
+    padding: 12px 24px;
+    background: transparent;
+    border: 1px solid var(--p-border);
+    border-radius: 999px;
+    color: var(--p-muted);
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.interesses-botao-recusar:hover {
+    border-color: var(--p-pink);
+    color: var(--p-text);
+}
+
+.interesses-status {
+    align-self: flex-start;
+    padding: 6px 14px;
+    border: 1px solid var(--p-border);
+    border-radius: 999px;
+    color: var(--p-muted);
+    font-size: 13px;
+}
+
+.interesses-status-match {
+    border-color: var(--p-green);
+    color: var(--p-green);
+    font-weight: 700;
+}
+
+.interesses-secao .parceiros-vazio-geral .parceiros-botao {
+    display: inline-block;
+    margin-top: 8px;
+}
+
+/* Celular */
+
+@media (max-width: 700px) {
+    .parceiros-navbar {
+        flex-wrap: wrap;
+        padding: 16px;
+    }
+
+    .parceiros-nav {
+        flex-wrap: wrap;
+        gap: 10px 18px;
+    }
+
+    .parceiros-main {
+        padding: 32px 16px 48px;
+    }
+}
