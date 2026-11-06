@@ -305,6 +305,79 @@ def demonstrar_interesse(request, usuario_id):
     return redirect("encontrar_parceiros")
 
 
+# INTERESSES RECEBIDOS E ENVIADOS - SPRINT 8
+# Quem recebe um interesse pode aceitar ou recusar. Quando aceita,
+# os dois jogadores dão match.
+
+@login_required
+def meus_interesses(request):
+    recebidos = (
+        Interesse.objects
+        .filter(usuario_destino=request.user)
+        .select_related("usuario_origem__perfil")
+        .order_by("-data_hora")
+    )
+
+    enviados = (
+        Interesse.objects
+        .filter(usuario_origem=request.user)
+        .select_related("usuario_destino__perfil")
+        .order_by("-data_hora")
+    )
+
+    pendentes = 0
+    for interesse in recebidos:
+        if interesse.status == "pendente":
+            pendentes += 1
+
+    return render(request, "interesses.html", {
+        "recebidos": recebidos,
+        "enviados": enviados,
+        "pendentes": pendentes,
+    })
+
+
+@login_required
+def responder_interesse(request, interesse_id):
+    if request.method != "POST":
+        return redirect("meus_interesses")
+
+    # Só quem recebeu o interesse pode responder
+    interesse = get_object_or_404(
+        Interesse,
+        pk=interesse_id,
+        usuario_destino=request.user,
+    )
+    jogador = interesse.usuario_origem
+    nome = jogador.get_full_name() or jogador.username
+    resposta = request.POST.get("resposta")
+
+    if interesse.status != "pendente":
+        messages.info(request, "Você já respondeu esse interesse.")
+
+    elif resposta == "aceito":
+        interesse.status = "aceito"
+        interesse.save()
+
+        # Cria o match, se os dois ainda não tiverem um
+        ja_tem_match = (
+            Match.objects.filter(usuario_1=jogador, usuario_2=request.user)
+            | Match.objects.filter(usuario_1=request.user, usuario_2=jogador)
+        ).exists()
+
+        if not ja_tem_match:
+            Match.objects.create(usuario_1=jogador, usuario_2=request.user)
+
+        messages.success(request, f"Deu match com {nome}!")
+
+    elif resposta == "recusado":
+        interesse.status = "recusado"
+        interesse.save()
+        messages.info(request, f"Você recusou o interesse de {nome}.")
+
+    return redirect("meus_interesses")
+
+
 @login_required
 def agendar_quadras(request):
     quadras = [
