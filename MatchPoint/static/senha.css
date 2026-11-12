@@ -1,0 +1,42 @@
+/* ===== MATCHPOINT: TROCAR SENHA ===== */
+
+.cartao-senha p {
+    margin: 0 0 18px;
+}
+
+.cartao-senha label {
+    display: block;
+    margin-bottom: 6px;
+    color: #e5e5e5;
+    font-size: 14px;
+}
+
+.cartao-senha input {
+    width: 100%;
+    padding: 13px 14px;
+    border: 1px solid #414141;
+    border-radius: 9px;
+    background: #101010;
+    color: var(--cor-texto);
+    font-size: 15px;
+}
+
+.cartao-senha input:focus {
+    outline: none;
+    border-color: var(--cor-verde);
+}
+
+.cartao-senha .helptext,
+.cartao-senha ul {
+    color: var(--cor-texto-secundario);
+    font-size: 13px;
+}
+
+.cartao-senha ul {
+    margin: 8px 0 0;
+    padding-left: 18px;
+}
+
+.cartao-senha .errorlist {
+    color: #ff6b6b;
+}
