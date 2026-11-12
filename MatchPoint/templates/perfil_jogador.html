@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+
+{% block titulo %}MatchPoint - Perfil do jogador{% endblock %}
+
+{% block conteudo %}
+<style>
+    .perfil {
+        max-width: 400px;
+        margin: 30px auto;
+        padding: 25px;
+        background-color: white;
+        border-radius: 10px;
+        text-align: center;
+    }
+    .foto {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        background-color: #ffd1b3;
+        color: #ff6600;
+        font-size: 40px;
+        font-weight: bold;
+        line-height: 100px;
+        margin: 0 auto;
+    }
+    .perfil h2 {
+        margin-bottom: 5px;
+    }
+    .bairro {
+        color: #777777;
+        margin-top: 0;
+    }
+    .info {
+        text-align: left;
+        margin-top: 20px;
+    }
+    .info p {
+        border-bottom: 1px solid #eeeeee;
+        padding-bottom: 8px;
+    }
+    .etiqueta {
+        display: inline-block;
+        background-color: #ff6600;
+        color: white;
+        padding: 4px 10px;
+        border-radius: 15px;
+        font-size: 14px;
+        margin: 2px;
+    }
+    .botao {
+        display: block;
+        background-color: #ff6600;
+        color: white;
+        padding: 12px;
+        border-radius: 5px;
+        text-decoration: none;
+        margin-top: 20px;
+    }
+</style>
+
+<div class="perfil">
+    <div class="foto">A</div>
+    <h2>Ana Souza</h2>
+    <p class="bairro">Copacabana, Rio de Janeiro</p>
+
+    <div class="info">
+        <p><b>Esportes:</b>
+            <span class="etiqueta">Vôlei de praia</span>
+            <span class="etiqueta">Beach tennis</span>
+        </p>
+        <p><b>Nível:</b> Intermediário</p>
+        <p><b>Praia favorita:</b> Posto 6</p>
+        <p><b>Horários livres:</b> Sábado e domingo de manhã</p>
+        <p><b>Sobre mim:</b> Jogo há 3 anos e procuro dupla para jogar nos fins de semana.</p>
+    </div>
+
+    <a class="botao" href="/parceiros/">Convidar para jogar</a>
+</div>
+{% endblock %}

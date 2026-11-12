@@ -26,6 +26,7 @@ from core import views
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("", views.home, name="home"),
+    path("como-funciona/", views.como_funciona, name="como_funciona"),
     path("editar-usuario/", views.editar_usuario, name="editar_usuario"),
     path("cadastro/", views.cadastro_usuario, name="cadastro"),
     path("usuarios/", views.lista_de_usuarios, name="lista_de_usuarios"),
@@ -37,8 +38,39 @@ urlpatterns = [
     path("encontrar-parceiros/", views.encontrar_parceiros, name="encontrar_parceiros"),
     path("interesse/<int:usuario_id>/", views.demonstrar_interesse, name="demonstrar_interesse"),
     path("agendar-quadras/", views.agendar_quadras, name="agendar_quadras"),
-    path("agendar-quadras/", views.agendar_quadras, name="agendar_quadras"),
     path("amistosos/", views.amistosos, name="amistosos"),
+    # Sistema de equipes
+    path("equipes/", views.equipes, name="equipes"),
+    path(
+        "trocar-jogador/",
+        views.trocar_jogador,
+        name="trocar_jogador"
+    ),
+    path(
+        "solicitar-entrada/<int:equipe_id>/",
+        views.solicitar_entrada,
+        name="solicitar_entrada"
+    ),
+    path(
+        "responder-solicitacao/<int:participacao_id>/",
+        views.responder_solicitacao,
+        name="responder_solicitacao"
+    ),
+    path(
+    "perfil-equipe/<int:usuario_id>/",
+    views.perfil_equipe,
+    name="perfil_equipe"
+    ),
+    path(
+        "conversas/",
+        views.minhas_conversas,
+        name="minhas_conversas"
+    ),
+    path(
+        "chat/<int:usuario_id>/",
+        views.chat,
+        name="chat"
+    ),
 ]
 
 

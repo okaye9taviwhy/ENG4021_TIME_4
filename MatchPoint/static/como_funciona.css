@@ -1,0 +1,370 @@
+
+/* ===== MATCHPOINT: COMO FUNCIONA ===== */
+
+/* O cabeçalho, o rodapé e as cores vêm do home.css. */
+
+.home-actions button {
+    padding: 9px 14px;
+    border: 1px solid var(--home-border);
+    border-radius: 5px;
+    background: transparent;
+    color: var(--home-muted);
+    font-size: 13px;
+    cursor: pointer;
+}
+
+.home-actions button:hover {
+    border-color: var(--home-green);
+    color: var(--home-green);
+}
+
+/* Apresentação */
+
+.como-hero {
+    padding: 75px 10% 80px;
+    display: grid;
+    grid-template-columns: 1.3fr 0.7fr;
+    align-items: center;
+    gap: 45px;
+}
+
+.como-numero {
+    padding: 34px 28px;
+    border: 1px solid #3b4c3a;
+    border-radius: 8px;
+    background: radial-gradient(circle at top left, #1a2819, var(--home-panel) 70%);
+    box-shadow: 0 0 70px #39ff1410;
+}
+
+.como-numero strong,
+.como-numero span,
+.como-numero small {
+    display: block;
+}
+
+.como-numero strong {
+    color: var(--home-green);
+    font-size: clamp(64px, 8vw, 104px);
+    font-weight: 900;
+    line-height: 1;
+    letter-spacing: -4px;
+}
+
+.como-numero span {
+    margin-top: 12px;
+    font-size: 18px;
+    font-weight: 800;
+}
+
+.como-numero small {
+    margin-top: 10px;
+    color: var(--home-muted);
+    font-size: 12px;
+}
+
+/* Seções */
+
+.como-secao {
+    padding: 70px 10% 85px;
+    border-top: 1px solid var(--home-border);
+}
+
+.como-secao-escura {
+    background: #0e100f;
+}
+
+.como-secao .section-heading h2,
+.como-chamada h2 {
+    font-weight: 900;
+}
+
+/* Abas: cada aba é um botão de opção, e o CSS mostra o painel da opção marcada */
+
+.como-abas {
+    position: relative;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.como-aba-input {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+}
+
+.como-aba {
+    padding: 13px 18px;
+    border: 1px solid var(--home-border);
+    border-radius: 5px;
+    background: var(--home-panel);
+    color: var(--home-muted);
+    font-size: 13px;
+    font-weight: 800;
+    cursor: pointer;
+    transition: color 0.2s ease, border-color 0.2s ease;
+}
+
+.como-aba:hover {
+    border-color: var(--home-muted);
+    color: var(--home-text);
+}
+
+.como-aba-input:focus-visible + .como-aba {
+    outline: 2px solid var(--home-green);
+    outline-offset: 3px;
+}
+
+#aba-jogadores:checked + .como-aba {
+    border-color: var(--home-green);
+    background: var(--home-green);
+    color: #090b09;
+}
+
+#aba-donos:checked + .como-aba {
+    border-color: var(--home-pink);
+    background: var(--home-pink);
+    color: #090b09;
+}
+
+.como-painel {
+    display: none;
+    width: 100%;
+    margin-top: 22px;
+}
+
+#aba-jogadores:checked ~ #painel-jogadores,
+#aba-donos:checked ~ #painel-donos {
+    display: block;
+}
+
+/* Passos */
+
+.como-passos {
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 17px;
+    list-style: none;
+}
+
+.como-passo {
+    padding: 24px;
+    border: 1px solid var(--home-border);
+    border-radius: 8px;
+    background: var(--home-panel);
+}
+
+.como-passo-numero {
+    color: var(--home-green);
+    font-size: 34px;
+    font-weight: 900;
+    letter-spacing: -1.5px;
+}
+
+.como-painel-rosa .como-passo-numero {
+    color: var(--home-pink);
+}
+
+.como-passo h3 {
+    margin: 16px 0 9px;
+    font-size: 18px;
+    font-weight: 900;
+}
+
+.como-passo p {
+    margin: 0;
+    color: var(--home-muted);
+    font-size: 13px;
+    line-height: 1.8;
+}
+
+.como-aviso {
+    margin: 0 0 17px;
+    padding: 13px 16px;
+    border: 1px solid #ff00a860;
+    border-radius: 5px;
+    background: #291523;
+    font-size: 13px;
+    line-height: 1.7;
+}
+
+.como-aviso strong {
+    color: var(--home-pink);
+}
+
+/* Esportes */
+
+.como-esportes {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 17px;
+}
+
+.como-esporte {
+    padding: 28px;
+    border: 1px solid var(--home-border);
+    border-radius: 8px;
+    background: var(--home-panel);
+}
+
+.como-esporte:first-child {
+    border-top: 3px solid var(--home-green);
+}
+
+.como-esporte:last-child {
+    border-top: 3px solid var(--home-pink);
+}
+
+.como-esporte-formato {
+    color: var(--home-muted);
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+}
+
+.como-esporte h3 {
+    margin: 14px 0 10px;
+    font-size: clamp(26px, 3vw, 34px);
+    font-weight: 900;
+    letter-spacing: -1px;
+}
+
+.como-esporte p {
+    margin: 0;
+    color: var(--home-muted);
+    font-size: 14px;
+    line-height: 1.8;
+}
+
+/* Perguntas frequentes */
+
+.como-perguntas {
+    display: grid;
+    gap: 10px;
+}
+
+.como-pergunta {
+    border: 1px solid var(--home-border);
+    border-radius: 8px;
+    background: var(--home-panel);
+}
+
+.como-pergunta[open] {
+    border-color: #39ff1460;
+}
+
+.como-pergunta summary {
+    padding: 18px 22px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 18px;
+    font-size: 15px;
+    font-weight: 800;
+    list-style: none;
+    cursor: pointer;
+}
+
+.como-pergunta summary::-webkit-details-marker {
+    display: none;
+}
+
+.como-pergunta summary::after {
+    content: "+";
+    flex-shrink: 0;
+    color: var(--home-green);
+    font-size: 24px;
+    line-height: 1;
+    transition: transform 0.2s ease;
+}
+
+.como-pergunta[open] summary::after {
+    color: var(--home-pink);
+    transform: rotate(45deg);
+}
+
+.como-pergunta summary:hover {
+    color: var(--home-green);
+}
+
+.como-pergunta summary:focus-visible {
+    outline: 2px solid var(--home-green);
+    outline-offset: 3px;
+    border-radius: 8px;
+}
+
+.como-pergunta p {
+    margin: 0;
+    padding: 0 22px 20px;
+    max-width: 720px;
+    color: var(--home-muted);
+    font-size: 14px;
+    line-height: 1.8;
+}
+
+/* Chamada final */
+
+.como-chamada {
+    padding: 80px 10%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border-top: 1px solid var(--home-border);
+    text-align: center;
+}
+
+.como-chamada h2 {
+    margin: 0;
+    font-size: clamp(36px, 6vw, 64px);
+    line-height: 1.05;
+    letter-spacing: -2.5px;
+}
+
+.como-chamada h2 span {
+    color: var(--home-green);
+    white-space: nowrap;
+}
+
+.como-chamada p {
+    margin: 18px 0 28px;
+    color: var(--home-muted);
+    font-size: 15px;
+    line-height: 1.8;
+}
+
+/* Responsividade */
+
+@media (max-width: 1000px) {
+    .como-hero,
+    .como-secao,
+    .como-chamada {
+        padding-right: 6%;
+        padding-left: 6%;
+    }
+
+    .como-passos {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 700px) {
+    .como-hero {
+        grid-template-columns: 1fr;
+        padding-top: 60px;
+        padding-bottom: 50px;
+    }
+
+    .como-passos,
+    .como-esportes {
+        grid-template-columns: 1fr;
+    }
+
+    .como-aba {
+        flex: 1 1 100%;
+        text-align: center;
+    }
+}

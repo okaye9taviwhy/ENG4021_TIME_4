@@ -30,20 +30,20 @@ As instruções abaixo apresentam uma orientação geral para explorar o protót
 
 Abra o protótipo do MatchPoint e explore a tela inicial.
 
-(![Tela inicial do MatchPoint](<img width="1512" height="888" alt="image" src="https://github.com/user-attachments/assets/ceea7be8-ccee-4b0f-8cab-4d5ccb2561c3" />)
+[Tela inicial do MatchPoint] <img width="1512" height="886" alt="Screenshot 2026-11-06 at 10 11 58" src="https://github.com/user-attachments/assets/fc2a893e-b816-4d6c-85f3-fc9e48a124e8" />
 
 ### 2. Explore as telas disponíveis
 
 Navegue pelas telas do protótipo para conhecer a proposta visual e as funcionalidades planejadas para o MatchPoint.
 
-![Telas do protótipo MatchPoint](esperando_a_criacao_da_tela.png)
+[Telas do protótipo MatchPoint] <img width="1512" height="896" alt="Screenshot 2026-11-06 at 10 13 31" src="https://github.com/user-attachments/assets/b865a433-0f34-46b4-8672-a3be79c01863" />
 
 
 ### 3. Conheça a proposta de conexão entre pessoas
 
 A proposta do MatchPoint é aproximar pessoas que compartilham o interesse em praticar esportes, facilitando a busca por parceiros para essas atividades.
 
-![Fluxo de conexão do MatchPoint](esperando_a_criacao_da_tel.png)
+[Fluxo de conexão do MatchPoint] <img width="1512" height="902" alt="Screenshot 2026-11-06 at 10 14 58" src="https://github.com/user-attachments/assets/849a2785-9ad6-4c30-99e3-e3fab0e1f644" />
 
 
 

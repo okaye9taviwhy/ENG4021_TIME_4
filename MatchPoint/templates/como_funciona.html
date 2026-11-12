@@ -1,0 +1,187 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>MatchPoint — Como funciona</title>
+
+    <link rel="stylesheet" href="{% static 'estilo.css' %}">
+    <link rel="stylesheet" href="{% static 'home.css' %}">
+    <link rel="stylesheet" href="{% static 'como_funciona.css' %}">
+</head>
+
+<body class="home-page">
+
+    <header class="home-navbar">
+        <a href="{% url 'home' %}" class="home-logo">
+            match<span>point</span><span class="logo-dot">.</span>
+        </a>
+
+        <nav class="home-nav" aria-label="Navegação principal">
+            <a href="{% url 'home' %}">Início</a>
+            <a href="{% url 'encontrar_parceiros' %}">Encontrar parceiros</a>
+            <a href="{% url 'agendar_quadras' %}">Agendar quadras</a>
+            <a href="{% url 'amistosos' %}">Amistosos</a>
+            <a href="{% url 'como_funciona' %}" class="nav-active" aria-current="page">Como funciona</a>
+            <a href="{% url 'editar_usuario' %}">Meu perfil</a>
+        </nav>
+
+        <div class="home-actions">
+            {% if user.is_authenticated %}
+                <form action="{% url 'logout' %}" method="post">
+                    {% csrf_token %}
+                    <button type="submit">Sair</button>
+                </form>
+            {% else %}
+                <a href="{% url 'login' %}" class="home-login">Entrar</a>
+                <a href="{% url 'cadastro' %}" class="home-signup">
+                    Criar conta <span aria-hidden="true">↗</span>
+                </a>
+            {% endif %}
+        </div>
+    </header>
+
+    <main>
+        <section class="como-hero">
+            <div class="hero-content">
+                <span class="hero-label">
+                    <span class="status-dot"></span>
+                    COMO FUNCIONA
+                </span>
+
+                <h1>
+                    Do cadastro<br>
+                    <span>à areia.</span>
+                </h1>
+
+                <p class="hero-description">
+                    O MatchPoint aproxima quem quer jogar vôlei de praia e
+                    beach tennis no Rio de Janeiro de novos parceiros e de
+                    quem tem rede na praia.
+                </p>
+            </div>
+
+            <div class="como-numero">
+                <strong>{{ total_jogadores }}</strong>
+                <span>jogador{{ total_jogadores|pluralize:"es" }} cadastrado{{ total_jogadores|pluralize }}</span>
+                <small>Número atualizado a cada visita.</small>
+            </div>
+        </section>
+
+        <section class="como-secao como-secao-escura">
+            <div class="section-heading">
+                <div>
+                    <span class="section-eyebrow">PASSO A PASSO</span>
+                    <h2>Escolha o seu lado da rede.</h2>
+                </div>
+
+                <p>
+                    Quem joga e quem tem rede usam o MatchPoint
+                    de formas diferentes.
+                </p>
+            </div>
+
+            <div class="como-abas" role="group" aria-label="Escolha para quem são os passos">
+                <input class="como-aba-input" type="radio" name="como-aba" id="aba-jogadores" checked>
+                <label class="como-aba" for="aba-jogadores">Para jogadores</label>
+
+                <input class="como-aba-input" type="radio" name="como-aba" id="aba-donos">
+                <label class="como-aba" for="aba-donos">Para donos de rede</label>
+
+                <div class="como-painel" id="painel-jogadores">
+                    <ol class="como-passos">
+                        {% for passo in passos_jogadores %}
+                            <li class="como-passo">
+                                <span class="como-passo-numero">{{ forloop.counter|stringformat:"02d" }}</span>
+                                <h3>{{ passo.titulo }}</h3>
+                                <p>{{ passo.texto }}</p>
+                            </li>
+                        {% endfor %}
+                    </ol>
+                </div>
+
+                <div class="como-painel como-painel-rosa" id="painel-donos">
+                    <p class="como-aviso">
+                        <strong>Em construção:</strong> o cadastro de redes ainda não está
+                        disponível no site. Estes passos mostram como vai funcionar.
+                    </p>
+
+                    <ol class="como-passos">
+                        {% for passo in passos_donos %}
+                            <li class="como-passo">
+                                <span class="como-passo-numero">{{ forloop.counter|stringformat:"02d" }}</span>
+                                <h3>{{ passo.titulo }}</h3>
+                                <p>{{ passo.texto }}</p>
+                            </li>
+                        {% endfor %}
+                    </ol>
+                </div>
+            </div>
+        </section>
+
+        <section class="como-secao">
+            <div class="section-heading">
+                <div>
+                    <span class="section-eyebrow">OS ESPORTES</span>
+                    <h2>Na areia, dois jeitos de jogar.</h2>
+                </div>
+            </div>
+
+            <div class="como-esportes">
+                {% for esporte in esportes %}
+                    <article class="como-esporte">
+                        <span class="como-esporte-formato">{{ esporte.formato }}</span>
+                        <h3>{{ esporte.nome }}</h3>
+                        <p>{{ esporte.descricao }}</p>
+                    </article>
+                {% endfor %}
+            </div>
+        </section>
+
+        <section class="como-secao como-secao-escura">
+            <div class="section-heading">
+                <div>
+                    <span class="section-eyebrow">PERGUNTAS FREQUENTES</span>
+                    <h2>Ficou alguma dúvida?</h2>
+                </div>
+            </div>
+
+            <div class="como-perguntas">
+                {% for item in perguntas %}
+                    <details class="como-pergunta">
+                        <summary>{{ item.pergunta }}</summary>
+                        <p>{{ item.resposta }}</p>
+                    </details>
+                {% endfor %}
+            </div>
+        </section>
+
+        <section class="como-chamada">
+            <h2>Deu match? <span>Deu jogo!</span></h2>
+
+            {% if user.is_authenticated %}
+                <p>Sua conta já está pronta. Agora é só achar com quem jogar.</p>
+                <a href="{% url 'encontrar_parceiros' %}" class="home-signup hero-cta">
+                    Encontrar parceiros <span aria-hidden="true">→</span>
+                </a>
+            {% else %}
+                <p>Crie sua conta e encontre seu próximo parceiro de jogo.</p>
+                <a href="{% url 'cadastro' %}" class="home-signup hero-cta">
+                    Criar conta <span aria-hidden="true">→</span>
+                </a>
+            {% endif %}
+        </section>
+
+        <footer class="home-footer">
+            <a href="{% url 'home' %}" class="home-logo">
+                match<span>point</span><span class="logo-dot">.</span>
+            </a>
+            <p>Feito para quem não quer ficar fora do jogo.</p>
+            <span>© MatchPoint</span>
+        </footer>
+    </main>
+
+</body>
+</html>

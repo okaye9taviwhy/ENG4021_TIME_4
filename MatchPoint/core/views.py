@@ -1,12 +1,16 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import update_session_auth_hash
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login
 from django.db import IntegrityError, transaction
-from django.shortcuts import render, redirect, get_object_or_404
-
-from .models import PerfilUsuario, Esporte, PerfilEsporte, Interesse
+from .models import (
+    PerfilUsuario, Esporte, PerfilEsporte,
+    Interesse, Equipe, ParticipacaoEquipe,
+    Match, Conversa, Mensagem
+)
+from django.conf import settings
 
 @login_required
 def editar_usuario(request):
@@ -115,6 +119,101 @@ def cadastro_usuario(request):
 
 def home(request):
     return render(request, "FigmaTela.html")
+
+
+def como_funciona(request):
+    '''
+    Esta função exibe a página que explica como o MatchPoint funciona.
+    Os textos ficam nas listas abaixo e são exibidos com {% for %}
+    na página como_funciona.html.
+    O número de jogadores vem do banco de dados e não conta os administradores.
+    '''
+    passos_jogadores = [
+        {
+            "titulo": "Crie sua conta",
+            "texto": "Cadastre-se com seu nome, e-mail e uma senha.",
+        },
+        {
+            "titulo": "Monte seu perfil",
+            "texto": "Adicione sua foto para os outros jogadores saberem com quem vão jogar.",
+        },
+        {
+            "titulo": "Encontre parceiros",
+            "texto": "Filtre os jogadores por esporte e nível e demonstre interesse em quem joga como você.",
+        },
+        {
+            "titulo": "Marque o jogo",
+            "texto": "Veja as quadras e os amistosos abertos, escolha o melhor horário e vá para a areia.",
+        },
+    ]
+
+    passos_donos = [
+        {
+            "titulo": "Crie sua conta",
+            "texto": "Cadastre-se com seu nome, e-mail e uma senha, como qualquer jogador.",
+        },
+        {
+            "titulo": "Cadastre sua rede",
+            "texto": "Informe a praia, o esporte e os horários em que a sua rede fica disponível.",
+        },
+        {
+            "titulo": "Apareça para os jogadores",
+            "texto": "Sua rede passa a ser vista por quem procura um lugar para jogar.",
+        },
+        {
+            "titulo": "Preencha os horários vagos",
+            "texto": "Receba os agendamentos e ocupe os horários que ficavam sem ninguém.",
+        },
+    ]
+
+    esportes = [
+        {
+            "nome": "Vôlei de praia",
+            "formato": "Em duplas ou 4x4",
+            "descricao": "Encontre uma dupla fixa ou complete o time que está faltando gente para jogar na areia.",
+        },
+        {
+            "nome": "Beach tennis",
+            "formato": "Em duplas ou individual",
+            "descricao": "Raquete e bolinha na areia. Encontre alguém do seu nível para bater uma bola na praia.",
+        },
+    ]
+
+    perguntas = [
+        {
+            "pergunta": "Preciso pagar para usar o MatchPoint?",
+            "resposta": "Não. Criar a conta, montar o perfil e buscar parceiros é gratuito.",
+        },
+        {
+            "pergunta": "Quais esportes posso jogar?",
+            "resposta": "O foco do MatchPoint é o vôlei de praia e o beach tennis, nas praias do Rio de Janeiro.",
+        },
+        {
+            "pergunta": "Preciso jogar bem para participar?",
+            "resposta": "Não. A busca separa os jogadores em iniciante, intermediário e avançado, para você encontrar quem joga como você.",
+        },
+        {
+            "pergunta": "Como encontro um parceiro?",
+            "resposta": "Entre na sua conta, abra Encontrar parceiros, use os filtros e clique em Tenho interesse no jogador que combina com você.",
+        },
+        {
+            "pergunta": "O que é um dono de rede?",
+            "resposta": "É quem monta ou administra uma rede na praia, como barracas, escolinhas e arenas, e quer ocupar os horários vagos.",
+        },
+        {
+            "pergunta": "Já posso cadastrar a minha rede?",
+            "resposta": "Ainda não. O cadastro de redes está em construção, mas você já pode criar sua conta.",
+        },
+    ]
+
+    contexto = {
+        "passos_jogadores": passos_jogadores,
+        "passos_donos": passos_donos,
+        "esportes": esportes,
+        "perguntas": perguntas,
+        "total_jogadores": User.objects.filter(is_superuser=False).count(),
+    }
+    return render(request, "como_funciona.html", contexto)
 
 
 @login_required
@@ -291,3 +390,291 @@ def amistosos(request):
         'amistosos': amistosos,
     }
     return render(request, 'amistosos.html', contexto)
+# EQUIPES ESPORTIVAS - SPRINT 7
+
+
+# Verificar se estamos testando no computador local
+def teste_local(request):
+    return settings.DEBUG and request.get_host().split(":")[0] in [
+        "127.0.0.1", "localhost"
+    ]
+
+
+# Escolher qual jogador estamos simulando
+def jogador_atual(request):
+
+    nome = request.session.get("jogador", "ana")
+
+    jogadores = {
+        "ana": ("Ana", "Silva"),
+        "pedro": ("Pedro", "Costa"),
+        "julia": ("Julia", "Martins")
+    }
+
+    if nome not in jogadores:
+        nome = "ana"
+
+    primeiro_nome, sobrenome = jogadores[nome]
+
+    usuario, criado = User.objects.get_or_create(
+        username="teste_equipe_" + nome
+    )
+
+    if criado:
+        usuario.first_name = primeiro_nome
+        usuario.last_name = sobrenome
+        usuario.set_unusable_password()
+        usuario.save()
+
+    return usuario
+
+
+# Trocar de jogador
+def trocar_jogador(request):
+
+    if not teste_local(request):
+        return redirect("home")
+
+    if request.method == "POST":
+
+        jogador = request.POST.get("jogador")
+
+        if jogador in ["ana", "pedro", "julia"]:
+            request.session["jogador"] = jogador
+
+    if request.POST.get("origem") == "conversas":
+        return redirect("minhas_conversas")
+
+    return redirect("equipes")
+
+
+# Página principal das equipes
+def equipes(request):
+
+    if not teste_local(request):
+        return redirect("home")
+
+    usuario = jogador_atual(request)
+
+    # Criar equipe
+    if request.method == "POST":
+
+        nome = request.POST.get("nome", "").strip()
+        esporte_id = request.POST.get("esporte")
+
+        if nome and esporte_id:
+
+            esporte = Esporte.objects.filter(id=esporte_id).first()
+
+            if esporte:
+
+                equipe = Equipe.objects.create(
+                    nome=nome,
+                    esporte=esporte,
+                    criador=usuario
+                )
+
+                # O criador entra automaticamente na equipe
+                ParticipacaoEquipe.objects.create(
+                    equipe=equipe,
+                    usuario=usuario,
+                    status="aceito"
+                )
+
+                return redirect("equipes")
+
+    lista_equipes = Equipe.objects.all()
+
+    esportes = Esporte.objects.all()
+
+    participacoes = ParticipacaoEquipe.objects.all()
+
+    return render(request, "equipes.html", {
+        "equipes": lista_equipes,
+        "esportes": esportes,
+        "participacoes": participacoes,
+        "usuario_atual": usuario
+    })
+
+
+# Solicitar entrada em uma equipe
+def solicitar_entrada(request, equipe_id):
+
+    if not teste_local(request):
+        return redirect("home")
+
+    if request.method == "POST":
+
+        usuario = jogador_atual(request)
+
+        equipe = get_object_or_404(Equipe, id=equipe_id)
+
+        if equipe.criador != usuario:
+
+            participacao = ParticipacaoEquipe.objects.filter(
+                equipe=equipe,
+                usuario=usuario
+            ).first()
+
+            if participacao is None:
+
+                ParticipacaoEquipe.objects.create(
+                    equipe=equipe,
+                    usuario=usuario,
+                    status="pendente"
+                )
+
+            elif participacao.status == "recusado":
+
+                participacao.status = "pendente"
+                participacao.save()
+
+    return redirect("equipes")
+
+
+# Aceitar ou recusar jogadores
+def responder_solicitacao(request, participacao_id):
+
+    if not teste_local(request):
+        return redirect("home")
+
+    if request.method == "POST":
+
+        usuario = jogador_atual(request)
+
+        participacao = get_object_or_404(
+            ParticipacaoEquipe,
+            id=participacao_id
+        )
+
+        resposta = request.POST.get("resposta")
+
+        # Apenas o criador pode responder
+        if participacao.equipe.criador == usuario:
+
+            if participacao.status == "pendente":
+
+                if resposta == "aceito" or resposta == "recusado":
+
+                    participacao.status = resposta
+                    participacao.save()
+
+    return redirect("equipes")
+
+# Visualizar perfil de um jogador
+def perfil_equipe(request, usuario_id):
+
+    if not teste_local(request):
+        return redirect("home")
+
+    usuario = get_object_or_404(User, id=usuario_id)
+
+    esportes = PerfilEsporte.objects.filter(usuario=usuario)
+
+    return render(request, "perfil_equipe.html", {
+        "usuario": usuario,
+        "esportes": esportes
+    })
+
+
+# Mensagens
+# Mostrar as conversas do jogador
+def minhas_conversas(request):
+
+    if not teste_local(request):
+        return redirect("home")
+
+    usuario = jogador_atual(request)
+
+    # Buscar as conversas existentes
+    todas_conversas = Conversa.objects.all()
+
+    minhas = []
+
+    for conversa in todas_conversas:
+
+        match = conversa.match
+
+        if match.usuario_1 == usuario:
+            minhas.append(conversa)
+
+        elif match.usuario_2 == usuario:
+            minhas.append(conversa)
+
+    # Jogadores disponíveis para iniciar uma conversa
+    jogadores = User.objects.filter(
+        username__startswith="teste_equipe_"
+    ).exclude(id=usuario.id)
+
+    return render(request, "conversas.html", {
+        "conversas": minhas,
+        "jogadores": jogadores,
+        "usuario_atual": usuario
+    })
+
+
+# Abrir uma conversa e enviar mensagens
+def chat(request, usuario_id):
+
+    if not teste_local(request):
+        return redirect("home")
+
+    usuario = jogador_atual(request)
+
+    destinatario = get_object_or_404(User, id=usuario_id)
+    if not destinatario.username.startswith("teste_equipe_"):
+        return redirect("minhas_conversas")
+
+    # Impedir conversa consigo mesmo
+    if usuario == destinatario:
+        return redirect("minhas_conversas")
+
+    # Buscar um match existente entre os dois
+    match = Match.objects.filter(
+        usuario_1=usuario,
+        usuario_2=destinatario
+    ).first()
+
+    if match is None:
+        match = Match.objects.filter(
+            usuario_1=destinatario,
+            usuario_2=usuario
+        ).first()
+
+    # Se ainda não existe, criar
+    if match is None:
+        match = Match.objects.create(
+            usuario_1=usuario,
+            usuario_2=destinatario
+        )
+
+    # Buscar ou criar a conversa
+    conversa, criada = Conversa.objects.get_or_create(
+        match=match
+    )
+
+    # Enviar mensagem
+    if request.method == "POST":
+
+        texto = request.POST.get("texto", "").strip()
+
+        if texto:
+
+            Mensagem.objects.create(
+                conversa=conversa,
+                remetente=usuario,
+                texto=texto
+            )
+
+            return redirect("chat", usuario_id=destinatario.id)
+
+    # Buscar mensagens antigas
+    mensagens = Mensagem.objects.filter(
+        conversa=conversa
+    )
+
+    return render(request, "chat.html", {
+        "destinatario": destinatario,
+        "usuario_atual": usuario,
+        "mensagens": mensagens
+    })
