@@ -41,6 +41,7 @@ urlpatterns = [
     path("interesses/<int:interesse_id>/responder/", views.responder_interesse, name="responder_interesse"),
     path("agendar-quadras/", views.agendar_quadras, name="agendar_quadras"),
     path("amistosos/", views.amistosos, name="amistosos"),
+    path("sugestoes/", views.sugestoes_parceiros, name="sugestoes_parceiros"),
     # Sistema de equipes
     path("equipes/", views.equipes, name="equipes"),
     path(

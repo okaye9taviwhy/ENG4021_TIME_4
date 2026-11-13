@@ -70,6 +70,10 @@
             <a href="{% url 'encontrar_parceiros' %}">Limpar filtros</a>
         </form>
 
+        <a href="{% url 'sugestoes_parceiros' %}" class="parceiros-sugestoes-link">
+            ✦ Ver jogadores sugeridos para mim
+        </a>
+
         <section class="parceiros-grade">
             {% for jogador in jogadores %}
                 <article class="parceiro-card">
