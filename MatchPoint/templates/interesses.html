@@ -1,0 +1,141 @@
+{% load static tz %}
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MatchPoint — Meus interesses</title>
+    <link rel="stylesheet" href="{% static 'estilo.css' %}">
+    <link rel="stylesheet" href="{% static 'parceiros.css' %}">
+    <link rel="stylesheet" href="{% static 'interesses.css' %}">
+</head>
+
+<body class="parceiros-page">
+    <header class="parceiros-navbar">
+        <a href="{% url 'home' %}" class="parceiros-logo">
+            match<span>point</span><b>.</b>
+        </a>
+
+        <nav class="parceiros-nav">
+            <a href="{% url 'home' %}">Início</a>
+            <a href="{% url 'encontrar_parceiros' %}" class="parceiros-nav-ativo">Encontrar parceiros</a>
+            <a href="{% url 'agendar_quadras' %}">Agendar quadras</a>
+            <a href="{% url 'amistosos' %}">Amistosos</a>
+            <a href="{% url 'como_funciona' %}">Como funciona</a>
+            <a href="{% url 'editar_usuario' %}">Meu perfil</a>
+        </nav>
+    </header>
+
+    <main class="parceiros-main">
+        <section class="parceiros-intro">
+            <span class="parceiros-eyebrow">INTERESSES</span>
+            <h1>Meus interesses<span>.</span></h1>
+            <p>Veja quem quer jogar com você e responda. Quando você aceita, vocês dão match.</p>
+        </section>
+
+        {% if messages %}
+            <div class="interesses-avisos">
+                {% for aviso in messages %}
+                    <p>{{ aviso }}</p>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        {% timezone "America/Sao_Paulo" %}
+        <section class="interesses-secao">
+            <h2>
+                Recebidos
+                {% if pendentes %}
+                    <span class="interesses-contador">{{ pendentes }} para responder</span>
+                {% endif %}
+            </h2>
+
+            <div class="parceiros-grade">
+                {% for interesse in recebidos %}
+                    {% with jogador=interesse.usuario_origem %}
+                        <article class="parceiro-card">
+                            <div class="parceiro-topo">
+                                <div class="parceiro-avatar interesses-avatar">
+                                    {% if jogador.perfil.foto %}
+                                        <img src="{{ jogador.perfil.foto }}" alt="">
+                                    {% else %}
+                                        <span>{{ jogador.get_full_name|default:jogador.username|first|upper }}</span>
+                                    {% endif %}
+                                </div>
+
+                                <div>
+                                    <h3>{{ jogador.get_full_name|default:jogador.username }}</h3>
+                                    <small class="interesses-data">{{ interesse.data_hora|date:"d/m/Y" }}</small>
+                                </div>
+                            </div>
+
+                            {% if interesse.status == "pendente" %}
+                                <form method="post" action="{% url 'responder_interesse' interesse.id %}" class="interesses-acoes">
+                                    {% csrf_token %}
+                                    <button type="submit" name="resposta" value="aceito" class="parceiros-botao">
+                                        Aceitar
+                                    </button>
+                                    <button type="submit" name="resposta" value="recusado" class="interesses-botao-recusar">
+                                        Recusar
+                                    </button>
+                                </form>
+                            {% elif interesse.status == "aceito" %}
+                                <span class="interesses-status interesses-status-match">Vocês deram match!</span>
+                            {% else %}
+                                <span class="interesses-status">Recusado</span>
+                            {% endif %}
+                        </article>
+                    {% endwith %}
+                {% empty %}
+                    <div class="parceiros-vazio-geral">
+                        <strong>Ninguém demonstrou interesse ainda</strong>
+                        <p>Quando alguém clicar em Tenho interesse no seu cartão, vai aparecer aqui.</p>
+                    </div>
+                {% endfor %}
+            </div>
+        </section>
+
+        <section class="interesses-secao">
+            <h2>Enviados</h2>
+
+            <div class="parceiros-grade">
+                {% for interesse in enviados %}
+                    {% with jogador=interesse.usuario_destino %}
+                        <article class="parceiro-card">
+                            <div class="parceiro-topo">
+                                <div class="parceiro-avatar interesses-avatar">
+                                    {% if jogador.perfil.foto %}
+                                        <img src="{{ jogador.perfil.foto }}" alt="">
+                                    {% else %}
+                                        <span>{{ jogador.get_full_name|default:jogador.username|first|upper }}</span>
+                                    {% endif %}
+                                </div>
+
+                                <div>
+                                    <h3>{{ jogador.get_full_name|default:jogador.username }}</h3>
+                                    <small class="interesses-data">{{ interesse.data_hora|date:"d/m/Y" }}</small>
+                                </div>
+                            </div>
+
+                            {% if interesse.status == "aceito" %}
+                                <span class="interesses-status interesses-status-match">Vocês deram match!</span>
+                            {% elif interesse.status == "recusado" %}
+                                <span class="interesses-status">Recusado</span>
+                            {% else %}
+                                <span class="interesses-status">Aguardando resposta</span>
+                            {% endif %}
+                        </article>
+                    {% endwith %}
+                {% empty %}
+                    <div class="parceiros-vazio-geral">
+                        <strong>Você ainda não demonstrou interesse em ninguém</strong>
+                        <p>Encontre jogadores do seu nível e clique em Tenho interesse.</p>
+                        <a href="{% url 'encontrar_parceiros' %}" class="parceiros-botao">Encontrar parceiros</a>
+                    </div>
+                {% endfor %}
+            </div>
+        </section>
+        {% endtimezone %}
+    </main>
+</body>
+</html>

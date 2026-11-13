@@ -37,6 +37,8 @@ urlpatterns = [
 
     path("encontrar-parceiros/", views.encontrar_parceiros, name="encontrar_parceiros"),
     path("interesse/<int:usuario_id>/", views.demonstrar_interesse, name="demonstrar_interesse"),
+    path("interesses/", views.meus_interesses, name="meus_interesses"),
+    path("interesses/<int:interesse_id>/responder/", views.responder_interesse, name="responder_interesse"),
     path("agendar-quadras/", views.agendar_quadras, name="agendar_quadras"),
     path("amistosos/", views.amistosos, name="amistosos"),
     # Sistema de equipes
