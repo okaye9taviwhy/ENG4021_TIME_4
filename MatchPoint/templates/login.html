@@ -9,12 +9,12 @@
     <link rel="stylesheet" href="{% static 'estilo.css' %}">
 </head>
 <body>
-    <a class="inicio" href="{% url 'login' %}">Início</a>
+    <a class="inicio" href="{% url 'home' %}">Início</a>
 
     <main class="centro">
         <h1 class="titulo">Bem-Vindo! Bora Jogar?</h1>
 
-        <form class="cartao" method="post" action="{% url 'login' %}">
+        <form class="cartao" method="post" action="{% url 'login_usuario' %}">
             {% csrf_token %}
             <h2>Entrar</h2>
 
@@ -36,7 +36,7 @@
 
             <p class="rodape">
                 Ainda não tem conta?
-                <a class="link" href="#">Criar agora</a>
+                <a class="link" href="{% url 'cadastro' %}">Criar agora</a>
             </p>
             
             <p class="rodape">

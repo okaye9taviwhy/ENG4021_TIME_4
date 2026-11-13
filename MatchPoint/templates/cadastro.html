@@ -9,7 +9,7 @@
 </head>
 <body>
 
-    <a class="inicio" href="{% url 'login' %}">← Voltar ao login</a>
+    <a class="inicio" href="{% url 'login_usuario' %}">← Voltar ao login</a>
 
     <div class="container">
         <h1>MatchPoint 🎾</h1>
@@ -132,7 +132,7 @@
             <!-- Botões de Finalizar e Cancelar -->
             <div class="botoes" style="margin-top: 20px;">
                 <button type="submit" class="botao">Criar minha conta no MatchPoint</button>
-                <a href="{% url 'login' %}" class="botao botao-cancelar" style="display: inline-block; text-align: center; text-decoration: none;">Já tenho uma conta</a>
+                <a href="{% url 'login_usuario' %}" class="botao botao-cancelar" style="display: inline-block; text-align: center; text-decoration: none;">Já tenho uma conta</a>
             </div>
 
         </form>

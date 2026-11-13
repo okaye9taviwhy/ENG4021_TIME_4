@@ -32,8 +32,6 @@ urlpatterns = [
     path("usuarios/", views.lista_de_usuarios, name="lista_de_usuarios"),
     path("jogador/<int:usuario_id>/", views.perfil_publico, name="perfil_publico"),
     path("remover-usuario/", views.remover_usuario, name="remover_usuario"),
-
-    path("accounts/", include("django.contrib.auth.urls")),
     path("usuario/", include("usuario.urls")),
 
     path("encontrar-parceiros/", views.encontrar_parceiros, name="encontrar_parceiros"),
@@ -75,6 +73,7 @@ urlpatterns = [
         views.chat,
         name="chat"
     ),
+    path("accounts/", include("django.contrib.auth.urls")),
 ]
 
 
