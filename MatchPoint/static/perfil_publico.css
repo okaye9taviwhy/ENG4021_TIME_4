@@ -1,0 +1,189 @@
+/* ===== MATCHPOINT: PERFIL PÚBLICO DO JOGADOR ===== */
+/* Usa o cabeçalho, as cores e os botões de parceiros.css */
+
+.parceiros-main.perfil-main {
+    width: 100%;
+    max-width: 760px;
+    margin: 0 auto;
+}
+
+.perfil-voltar {
+    display: inline-block;
+    margin-bottom: 20px;
+    color: var(--p-muted);
+    font-size: 14px;
+}
+
+.perfil-voltar:hover {
+    color: var(--p-green);
+}
+
+.perfil-cartao {
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+    padding: 36px;
+    background: var(--p-card);
+    border: 1px solid var(--p-border);
+    border-radius: 24px;
+}
+
+/* Foto, nome e data */
+
+.perfil-topo {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+}
+
+.perfil-avatar {
+    display: grid;
+    place-items: center;
+    width: 96px;
+    height: 96px;
+    color: #0b0d0c;
+    font-size: 40px;
+    font-weight: 900;
+}
+
+.perfil-topo h1 {
+    margin: 6px 0 4px;
+    font-size: clamp(28px, 5vw, 44px);
+    font-weight: 900;
+    letter-spacing: -1.5px;
+    overflow-wrap: anywhere;
+}
+
+.perfil-topo h1 span {
+    color: var(--p-green);
+}
+
+.perfil-desde {
+    margin: 0;
+    color: var(--p-muted);
+    font-size: 14px;
+}
+
+.perfil-aviso {
+    margin: 0;
+    padding: 14px 20px;
+    border: 1px solid var(--p-pink);
+    border-radius: 16px;
+    font-weight: 700;
+}
+
+/* Esportes */
+
+.perfil-secao h2 {
+    margin: 0 0 14px;
+    font-size: 20px;
+    font-weight: 800;
+}
+
+.perfil-esportes {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.perfil-esporte {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px 14px;
+    padding: 14px 18px;
+    background: var(--p-bg);
+    border: 1px solid var(--p-border);
+    border-radius: 16px;
+}
+
+.perfil-esporte span {
+    padding: 4px 12px;
+    border: 1px solid var(--p-pink);
+    border-radius: 999px;
+    font-size: 12px;
+}
+
+.perfil-esporte small {
+    margin-left: auto;
+    color: var(--p-green);
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.perfil-esporte-comum {
+    border-color: var(--p-green);
+}
+
+.perfil-vazio {
+    margin: 0;
+    color: var(--p-muted);
+}
+
+/* Botões */
+
+.perfil-acoes {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px;
+}
+
+.perfil-acoes form {
+    margin: 0;
+}
+
+.perfil-acoes .parceiros-botao {
+    display: inline-block;
+}
+
+.perfil-selo {
+    padding: 10px 18px;
+    border: 1px solid var(--p-border);
+    border-radius: 999px;
+    color: var(--p-muted);
+    font-size: 14px;
+}
+
+.perfil-selo-verde {
+    border-color: var(--p-green);
+    color: var(--p-green);
+    font-weight: 700;
+}
+
+/* Celular */
+
+@media (max-width: 700px) {
+    .parceiros-navbar {
+        flex-wrap: wrap;
+        padding: 16px;
+    }
+
+    .parceiros-nav {
+        flex-wrap: wrap;
+        gap: 10px 18px;
+    }
+
+    .parceiros-main.perfil-main {
+        padding: 24px 16px 48px;
+    }
+
+    .perfil-cartao {
+        padding: 24px 20px;
+    }
+
+    .perfil-topo {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+    }
+
+    .perfil-avatar {
+        width: 72px;
+        height: 72px;
+        font-size: 30px;
+    }
+}
