@@ -3,6 +3,7 @@ from django.conf import settings
 from django.db import models
 
 
+
 class PerfilUsuario(models.Model):
     usuario = models.OneToOneField(
         settings.AUTH_USER_MODEL,
@@ -10,6 +11,12 @@ class PerfilUsuario(models.Model):
         related_name="perfil"
     )
     foto = models.URLField(blank=True)
+    
+    foto_arquivo = models.ImageField(
+    upload_to="perfis/",
+    blank=True,
+    null=True
+)
     latitude = models.DecimalField(
         max_digits=9, decimal_places=6, null=True, blank=True
     )
@@ -17,8 +24,15 @@ class PerfilUsuario(models.Model):
         max_digits=9, decimal_places=6, null=True, blank=True
     )
 
+    # New registration information
+    idade = models.PositiveSmallIntegerField(null=True, blank=True)
+    tempo_jogo = models.CharField(max_length=30, blank=True)
+    dias_disponiveis = models.JSONField(default=list, blank=True)
+    horarios_disponiveis = models.JSONField(default=list, blank=True)
+
     def __str__(self):
         return self.usuario.username
+
 
 
 class Esporte(models.Model):

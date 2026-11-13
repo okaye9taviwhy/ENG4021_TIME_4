@@ -1,3 +1,4 @@
+
 {% load static %}
 <!DOCTYPE html>
 <html lang="pt-BR">
@@ -15,17 +16,17 @@
         <h1>MatchPoint 🎾</h1>
         <p class="subtitulo">Encontre parceiros de jogo, e muito mais!</p>
 
-        <!-- Mensagem de erro caso o back-end envie -->
         {% if erro %}
             <p class="texto" style="color: #ff4d4d; font-weight: bold;">{{ erro }}</p>
         {% endif %}
 
-        <form method="POST" action="{% url 'cadastro' %}">
+        <!-- enctype é necessário para enviar arquivos -->
+        <form method="POST" action="{% url 'cadastro' %}" enctype="multipart/form-data">
             {% csrf_token %}
 
             <fieldset>
                 <legend>Dados de Acesso</legend>
-                
+
                 <div class="campo">
                     <label for="username">Nome de Usuário (Username):</label>
                     <input type="text" id="username" name="username" placeholder="Ex: joao_tenis" autocomplete="username" required>
@@ -69,6 +70,18 @@
                         <option value="1_a_3_anos">De 1 a 3 anos</option>
                         <option value="mais_3_anos">Mais de 3 anos</option>
                     </select>
+                </div>
+
+                <!-- Foto de perfil -->
+                <div class="campo">
+                    <label for="foto_arquivo">Foto de perfil (opcional):</label>
+                    <input
+                        type="file"
+                        id="foto_arquivo"
+                        name="foto_arquivo"
+                        accept="image/*"
+                    >
+                    <small>Escolha uma foto para seu perfil. Máximo de 5 MB.</small>
                 </div>
             </fieldset>
 
@@ -129,7 +142,6 @@
                 </div>
             </fieldset>
 
-            <!-- Botões de Finalizar e Cancelar -->
             <div class="botoes" style="margin-top: 20px;">
                 <button type="submit" class="botao">Criar minha conta no MatchPoint</button>
                 <a href="{% url 'login_usuario' %}" class="botao botao-cancelar" style="display: inline-block; text-align: center; text-decoration: none;">Já tenho uma conta</a>

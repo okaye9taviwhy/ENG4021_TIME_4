@@ -6,6 +6,9 @@ from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login
 from django.db import IntegrityError, transaction
 from django.db.models import Q
+from django.core.exceptions import ValidationError
+from django.core.files.images import get_image_dimensions
+
 from .models import (
     PerfilUsuario, Esporte, PerfilEsporte,
     Interesse, Equipe, ParticipacaoEquipe,
@@ -18,37 +21,146 @@ def editar_usuario(request):
     usuario = request.user
     perfil, criado = PerfilUsuario.objects.get_or_create(usuario=usuario)
 
+    nomes_esportes = {
+        "beach_tennis": "Beach Tennis",
+        "tenis": "Tênis",
+        "futevolei": "Futevôlei",
+        "volei": "Vôlei",
+        "padel": "Padel",
+        "futebol": "Futebol / Society",
+    }
+
     if request.method == "POST":
         nome = request.POST.get("nome", "").strip()
-        email = request.POST.get("email", "").strip()
-        foto = request.POST.get("foto", "").strip()
         senha = request.POST.get("senha", "")
+        confirmar_senha = request.POST.get("confirmar_senha", "")
 
-        if not nome or not email: 
-            messages.error(request, "Preencha o nome e o e-mail.")
-        elif User.objects.filter(email=email).exclude(pk=usuario.pk).exists():
-            messages.error(request, "Este e-mail já está em uso.")
-        else:
+        esportes_selecionados = request.POST.getlist("esportes")
+        dias = request.POST.getlist("dias")
+        horarios = request.POST.getlist("horarios")
+
+        try:
+            idade = int(request.POST.get("idade", ""))
+
+            if not 10 <= idade <= 100:
+                raise ValueError
+
+            tempo_jogo = request.POST.get("tempo_jogo", "")
+            if tempo_jogo not in [
+                "iniciante",
+                "menos_1_ano",
+                "1_a_3_anos",
+                "mais_3_anos",
+            ]:
+                raise ValueError("Selecione seu tempo de experiência.")
+
+
+            if senha and senha != confirmar_senha:
+                raise ValueError("As senhas não coincidem.")
+
+            if senha and len(senha) < 8:
+                raise ValueError("A senha deve ter pelo menos 8 caracteres.")
+
             partes_nome = nome.split(maxsplit=1)
-            usuario.first_name = partes_nome[0]
-            usuario.last_name = partes_nome[1] if len(partes_nome) > 1 else ""
-            usuario.email = email
-            usuario.save()
 
-            perfil.foto = foto
-            perfil.save()
-
-            if senha:
-                usuario.set_password(senha)
+            with transaction.atomic():
+                usuario.first_name = partes_nome[0]
+                usuario.last_name = (
+                    partes_nome[1] if len(partes_nome) > 1 else ""
+                )
                 usuario.save()
-                update_session_auth_hash(request, usuario)
+
+                perfil.idade = idade
+                perfil.tempo_jogo = tempo_jogo
+                perfil.dias_disponiveis = dias
+                perfil.horarios_disponiveis = horarios
+
+                # Só substitui a foto se uma nova for enviada
+                if request.FILES.get("foto_arquivo"):
+                    foto = request.FILES["foto_arquivo"]
+
+                    if foto.size > 5 * 1024 * 1024:
+                        raise ValueError("A foto deve ter no máximo 5 MB.")
+
+                    try:
+                        dimensoes = get_image_dimensions(foto)
+                        if dimensoes is None:
+                            raise ValueError
+                        foto.seek(0)
+                    except Exception:
+                        raise ValueError("Envie um arquivo de imagem válido.")
+
+                    perfil.foto_arquivo = foto
+
+                perfil.save()
+
+                # Preserva os níveis dos esportes que o usuário já tinha
+                niveis_anteriores = {
+                    pe.esporte.nome: pe.nivel
+                    for pe in PerfilEsporte.objects.filter(usuario=usuario)
+                }
+
+                PerfilEsporte.objects.filter(usuario=usuario).delete()
+
+                for codigo in esportes_selecionados:
+                    nome_esporte = nomes_esportes.get(codigo)
+
+                    if nome_esporte:
+                        esporte, _ = Esporte.objects.get_or_create(
+                            nome=nome_esporte
+                        )
+
+                        PerfilEsporte.objects.create(
+                            usuario=usuario,
+                            esporte=esporte,
+                            nivel=niveis_anteriores.get(
+                                nome_esporte, "Não informado"
+                            )
+                        )
+
+                if senha:
+                    usuario.set_password(senha)
+                    usuario.save()
+                    update_session_auth_hash(request, usuario)
 
             messages.success(request, "Perfil atualizado com sucesso!")
             return redirect("editar_usuario")
 
+        except ValueError as erro:
+            messages.error(
+                request,
+                str(erro) if str(erro) else
+                "Informe uma idade válida entre 10 e 100 anos."
+            )
+
+    esportes_atuais = PerfilEsporte.objects.filter(
+        usuario=usuario
+    ).select_related("esporte")
+
+    codigos_esportes = {
+        "Beach Tennis": "beach_tennis",
+        "Tênis": "tenis",
+        "Futevôlei": "futevolei",
+        "Vôlei": "volei",
+        "Padel": "padel",
+        "Futebol / Society": "futebol",
+    }
+
+    esportes_selecionados = [
+        codigos_esportes[pe.esporte.nome]
+        for pe in esportes_atuais
+        if pe.esporte.nome in codigos_esportes
+    ]
+
+    nome_completo = usuario.get_full_name()
+
     return render(request, "editar_usuario.html", {
         "usuario": usuario,
-        "foto": perfil.foto,
+        "perfil": perfil,
+        "nome": nome_completo,
+        "esportes_selecionados": esportes_selecionados,
+        "dias_selecionados": perfil.dias_disponiveis,
+        "horarios_selecionados": perfil.horarios_disponiveis,
     })
 
 
@@ -80,42 +192,98 @@ def login_usuario(request):
     return render(request, "login.html", {"erro": erro})
 
 
+
 def cadastro_usuario(request):
     erro = ""
 
     if request.method == "POST":
+        username = request.POST.get("username", "").strip()
         nome = request.POST.get("nome", "").strip()
         email = request.POST.get("email", "").strip().lower()
         senha = request.POST.get("senha", "")
         confirmar_senha = request.POST.get("confirmar_senha", "")
 
-        if not nome or not email or not senha:
+        idade = request.POST.get("idade", "")
+        tempo_jogo = request.POST.get("tempo_jogo", "")
+
+        esportes_selecionados = request.POST.getlist("esportes")
+        dias = request.POST.getlist("dias")
+        horarios = request.POST.getlist("horarios")
+
+        if not username or not nome or not email or not senha:
             erro = "Preencha todos os campos."
+        elif tempo_jogo not in [
+            "iniciante",
+            "menos_1_ano",
+            "1_a_3_anos",
+            "mais_3_anos",
+        ]:
+            erro = "Selecione seu tempo de experiência."
         elif senha != confirmar_senha:
             erro = "As senhas não coincidem."
         elif User.objects.filter(email__iexact=email).exists():
             erro = "Este e-mail já está cadastrado."
+        elif User.objects.filter(username__iexact=username).exists():
+            erro = "Este nome de usuário já está em uso."
         else:
-            partes_nome = nome.split(maxsplit=1)
-
             try:
+                idade = int(idade)
+
+                if idade < 10 or idade > 100:
+                    raise ValueError
+
+                partes_nome = nome.split(maxsplit=1)
+
                 with transaction.atomic():
                     usuario = User.objects.create_user(
-                        username=email,
+                        username=username,
                         email=email,
                         password=senha,
                         first_name=partes_nome[0],
                         last_name=partes_nome[1] if len(partes_nome) > 1 else "",
                     )
-                    PerfilUsuario.objects.create(usuario=usuario)
+
+                    perfil = PerfilUsuario.objects.create(
+                        usuario=usuario,
+                        idade=idade,
+                        tempo_jogo=tempo_jogo,
+                        dias_disponiveis=dias,
+                        horarios_disponiveis=horarios,
+                    )
+
+                    nomes_esportes = {
+                        "beach_tennis": "Beach Tennis",
+                        "tenis": "Tênis",
+                        "futevolei": "Futevôlei",
+                        "volei": "Vôlei",
+                        "padel": "Padel",
+                        "futebol": "Futebol / Society",
+                    }
+
+                    for codigo in esportes_selecionados:
+                        nome_esporte = nomes_esportes.get(codigo)
+
+                        if nome_esporte:
+                            esporte, _ = Esporte.objects.get_or_create(
+                                nome=nome_esporte
+                            )
+
+                            PerfilEsporte.objects.create(
+                                usuario=usuario,
+                                esporte=esporte,
+                                nivel="Não informado"
+                            )
 
                 login(request, usuario)
                 return redirect("home")
 
+            except (ValueError, TypeError):
+                erro = "Informe uma idade válida entre 10 e 100 anos."
             except IntegrityError:
                 erro = "Não foi possível criar a conta. Tente novamente."
 
     return render(request, "cadastro.html", {"erro": erro})
+
 
 
 def home(request):

@@ -1,98 +1,156 @@
+
 {% load static %}
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Editar perfil - MatchPoint</title>
-    <link rel="stylesheet" href="{% static 'estilo.css' %}">
+    <title>MatchPoint - Meu Perfil</title>
+    <link rel="stylesheet" href="{% static 'cadastro.css' %}">
 </head>
-
 <body>
 
-    <a href="{% url 'home' %}" class="inicio">← Voltar</a>
+    <a class="inicio" href="{% url 'home' %}">← Voltar</a>
 
-    <main class="centro">
-        <h1 class="titulo">MatchPoint</h1>
+    <div class="container">
+        <h1>MatchPoint</h1>
+        <p class="subtitulo">Atualize suas informações e encontre parceiros de jogo!</p>
 
-        <form class="cartao" action="{% url 'editar_usuario' %}" method="post">
+        {% if messages %}
+            {% for message in messages %}
+                <p class="texto">{{ message }}</p>
+            {% endfor %}
+        {% endif %}
+
+        <form method="POST" action="{% url 'editar_usuario' %}" enctype="multipart/form-data">
             {% csrf_token %}
 
-            <h2>Editar perfil</h2>
 
-            <p class="texto">
-                Atualize suas informações no MatchPoint.
-            </p>
-            {% if messages %}
-                {% for message in messages %}
-                    <p class="texto">{{ message }}</p>
-                {% endfor %}
-            {% endif %}
 
-            <div class="campo">
-                <label for="nome">Nome completo</label>
-                <input
-                    type="text"
-                    id="nome"
-                    name="nome"
-                    value="{{ usuario.get_full_name }}"
-                    placeholder="Digite seu nome"
-                    autocomplete="name"
-                    required
-                >
-            </div>
+            <fieldset>
+                <legend>Sobre Você</legend>
 
-            <div class="campo">
-                <label for="email">E-mail</label>
-                <input
-                    type="email"
-                    id="email"
-                    name="email"
-                    value="{{ usuario.email }}"
-                    placeholder="Digite seu e-mail"
-                    autocomplete="email"
-                    required
-                >
-            </div>
+                <div class="campo">
+                    <label for="nome">Nome Completo:</label>
+                    <input type="text" id="nome" name="nome"
+                           value="{{ nome|default:usuario.get_full_name }}"
+                           autocomplete="name" required>
+                </div>
 
-            <div class="campo">
-                <label for="foto">Foto de perfil (URL)</label>
-                <input
-                    type="url"
-                    id="foto"
-                    name="foto"
-                    value="{{ foto|default:'' }}"
-                    placeholder="https://exemplo.com/foto.jpg"
-                >
-            </div>
+                <div class="campo">
+                    <label for="idade">Idade:</label>
+                    <input type="number" id="idade" name="idade"
+                           min="10" max="100"
+                           value="{{ perfil.idade|default:'' }}" required>
+                </div>
 
-            <div class="campo">
-                <label for="senha">Nova senha</label>
-                <input
-                    type="password"
-                    id="senha"
-                    name="senha"
-                    placeholder="Deixe vazio para manter a atual"
-                    autocomplete="new-password"
-                >
-            </div>
+                <div class="campo">
+                    <label for="tempo_jogo">Há quanto tempo você joga?</label>
+                    <select id="tempo_jogo" name="tempo_jogo" required>
+                        <option value="">Selecione uma opção...</option>
+                        <option value="iniciante" {% if perfil.tempo_jogo == "iniciante" %}selected{% endif %}>Estou começando agora</option>
+                        <option value="menos_1_ano" {% if perfil.tempo_jogo == "menos_1_ano" %}selected{% endif %}>Menos de 1 ano</option>
+                        <option value="1_a_3_anos" {% if perfil.tempo_jogo == "1_a_3_anos" %}selected{% endif %}>De 1 a 3 anos</option>
+                        <option value="mais_3_anos" {% if perfil.tempo_jogo == "mais_3_anos" %}selected{% endif %}>Mais de 3 anos</option>
+                    </select>
+                </div>
 
-            <div class="botoes">
+                <div class="campo">
+                    <label for="foto_arquivo">Foto de perfil:</label>
+
+                    {% if perfil.foto_arquivo %}
+                        <p class="texto">Foto atual:</p>
+                        <img src="{{ perfil.foto_arquivo.url }}"
+                             alt="Foto de perfil atual"
+                             style="width: 120px; height: 120px; object-fit: cover; border-radius: 50%;">
+                    {% endif %}
+
+                    <input type="file" id="foto_arquivo"
+                           name="foto_arquivo" accept="image/*">
+
+                    <small>Envie uma nova imagem para substituir a atual. Deixe vazio para mantê-la.</small>
+                </div>
+            </fieldset>
+
+            <fieldset>
+                <legend>Esportes de Interesse</legend>
+                <p class="aviso-deck">Selecione os esportes que você pratica ou quer praticar:</p>
+
+                <div class="deck-esportes">
+                    <label class="card-esporte">
+                        <input type="checkbox" name="esportes" value="beach_tennis" {% if "beach_tennis" in esportes_selecionados %}checked{% endif %}>
+                        Beach Tennis
+                    </label>
+
+                    <label class="card-esporte">
+                        <input type="checkbox" name="esportes" value="tenis" {% if "tenis" in esportes_selecionados %}checked{% endif %}>
+                        Tênis
+                    </label>
+
+                    <label class="card-esporte">
+                        <input type="checkbox" name="esportes" value="futevolei" {% if "futevolei" in esportes_selecionados %}checked{% endif %}>
+                        Futevôlei
+                    </label>
+
+                    <label class="card-esporte">
+                        <input type="checkbox" name="esportes" value="volei" {% if "volei" in esportes_selecionados %}checked{% endif %}>
+                        Vôlei
+                    </label>
+
+                    <label class="card-esporte">
+                        <input type="checkbox" name="esportes" value="padel" {% if "padel" in esportes_selecionados %}checked{% endif %}>
+                        Padel
+                    </label>
+
+                    <label class="card-esporte">
+                        <input type="checkbox" name="esportes" value="futebol" {% if "futebol" in esportes_selecionados %}checked{% endif %}>
+                        Futebol / Society
+                    </label>
+                </div>
+            </fieldset>
+
+            <fieldset>
+                <legend>Disponibilidade</legend>
+
+                <div class="campo">
+                    <label>Dias da semana disponíveis:</label>
+                    <div class="opcoes-linha">
+                        <label><input type="checkbox" name="dias" value="segunda" {% if "segunda" in dias_selecionados %}checked{% endif %}> Seg</label>
+                        <label><input type="checkbox" name="dias" value="terca" {% if "terca" in dias_selecionados %}checked{% endif %}> Ter</label>
+                        <label><input type="checkbox" name="dias" value="quarta" {% if "quarta" in dias_selecionados %}checked{% endif %}> Qua</label>
+                        <label><input type="checkbox" name="dias" value="quinta" {% if "quinta" in dias_selecionados %}checked{% endif %}> Qui</label>
+                        <label><input type="checkbox" name="dias" value="sexta" {% if "sexta" in dias_selecionados %}checked{% endif %}> Sex</label>
+                        <label><input type="checkbox" name="dias" value="sabado" {% if "sabado" in dias_selecionados %}checked{% endif %}> Sáb</label>
+                        <label><input type="checkbox" name="dias" value="domingo" {% if "domingo" in dias_selecionados %}checked{% endif %}> Dom</label>
+                    </div>
+                </div>
+
+                <div class="campo">
+                    <label>Horários de preferência:</label>
+                    <div class="opcoes-linha">
+                        <label><input type="checkbox" name="horarios" value="manha" {% if "manha" in horarios_selecionados %}checked{% endif %}> Manhã</label>
+                        <label><input type="checkbox" name="horarios" value="tarde" {% if "tarde" in horarios_selecionados %}checked{% endif %}> Tarde</label>
+                        <label><input type="checkbox" name="horarios" value="noite" {% if "noite" in horarios_selecionados %}checked{% endif %}> Noite</label>
+                    </div>
+                </div>
+            </fieldset>
+
+            <div class="botoes" style="margin-top: 20px;">
                 <button type="submit" class="botao">
                     Salvar alterações
                 </button>
 
-                <a href="{% url 'home' %}" class="botao botao-cancelar">
-                     Cancelar
+                <a href="{% url 'home' %}" class="botao botao-cancelar"
+                   style="display: inline-block; text-align: center; text-decoration: none;">
+                    Cancelar
                 </a>
             </div>
         </form>
 
-         <p class="rodape">
+        <p class="rodape">
             <a class="link" href="{% url 'password_change' %}">Trocar senha</a>
         </p>
-        
-    </main>
+    </div>
 
 </body>
 </html>
