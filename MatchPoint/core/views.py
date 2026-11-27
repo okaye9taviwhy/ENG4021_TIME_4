@@ -12,7 +12,8 @@ from django.core.files.images import get_image_dimensions
 from .models import (
     PerfilUsuario, Esporte, PerfilEsporte,
     Interesse, Equipe, ParticipacaoEquipe,
-    Match, Conversa, Mensagem
+    Match, Conversa, Mensagem,
+    Bloqueio, Denuncia
 )
 from django.conf import settings
 
@@ -802,6 +803,9 @@ def trocar_jogador(request):
     if request.POST.get("origem") == "conversas":
         return redirect("minhas_conversas")
 
+    if request.POST.get("origem") == "seguranca":
+        return redirect("seguranca")
+
     return redirect("equipes")
 
 
@@ -964,9 +968,10 @@ def minhas_conversas(request):
     ).exclude(id=usuario.id)
 
     return render(request, "conversas.html", {
-        "conversas": minhas,
-        "jogadores": jogadores,
-        "usuario_atual": usuario
+    "conversas": minhas,
+    "jogadores": jogadores,
+    "usuario_atual": usuario,
+    "aviso_chat": request.session.pop("aviso_chat", "")
     })
 
 
@@ -985,6 +990,14 @@ def chat(request, usuario_id):
     # Impedir conversa consigo mesmo
     if usuario == destinatario:
         return redirect("minhas_conversas")
+    # Impedir conversa entre jogadores bloqueados
+    if existe_bloqueio(usuario, destinatario):
+
+        request.session["aviso_chat"] = (
+            "Esta conversa esta indisponivel devido a um bloqueio."
+        )
+
+    return redirect("minhas_conversas")
 
     # Buscar um match existente entre os dois
     match = Match.objects.filter(
@@ -1034,4 +1047,122 @@ def chat(request, usuario_id):
         "destinatario": destinatario,
         "usuario_atual": usuario,
         "mensagens": mensagens
+    })
+
+# SISTEMA DE SEGURANCA - SPRINT FINAL
+
+
+# Verificar se existe bloqueio entre dois jogadores
+def existe_bloqueio(usuario, outro_usuario):
+
+    bloqueio1 = Bloqueio.objects.filter(
+        usuario=usuario,
+        bloqueado=outro_usuario
+    ).exists()
+
+    bloqueio2 = Bloqueio.objects.filter(
+        usuario=outro_usuario,
+        bloqueado=usuario
+    ).exists()
+
+    return bloqueio1 or bloqueio2
+
+
+# Pagina de seguranca
+def seguranca(request):
+
+    if not teste_local(request):
+        return redirect("home")
+
+    usuario = jogador_atual(request)
+
+    jogadores = User.objects.filter(
+        username__startswith="teste_equipe_"
+    ).exclude(id=usuario.id)
+
+    bloqueios = Bloqueio.objects.filter(
+        usuario=usuario
+    )
+
+    denuncias = Denuncia.objects.filter(
+        denunciante=usuario
+    ).order_by("-data_hora")
+
+    aviso = ""
+
+    if request.method == "POST":
+
+        jogador_id = request.POST.get("jogador")
+        acao = request.POST.get("acao")
+
+        jogador = get_object_or_404(
+            jogadores,
+            id=jogador_id
+        )
+
+        # Bloquear jogador
+        if acao == "bloquear":
+
+            Bloqueio.objects.get_or_create(
+                usuario=usuario,
+                bloqueado=jogador
+            )
+
+            aviso = "Jogador bloqueado com sucesso!"
+
+        # Desbloquear jogador
+        elif acao == "desbloquear":
+
+            Bloqueio.objects.filter(
+                usuario=usuario,
+                bloqueado=jogador
+            ).delete()
+
+            aviso = "Jogador desbloqueado com sucesso!"
+
+        # Denunciar jogador
+        elif acao == "denunciar":
+
+            motivo = request.POST.get("motivo", "")
+            descricao = request.POST.get(
+                "descricao", ""
+            ).strip()
+
+            motivos_validos = [
+                "Comportamento inadequado",
+                "Ofensas",
+                "Perfil falso",
+                "Spam",
+                "Outro"
+            ]
+
+            if motivo in motivos_validos and descricao:
+
+                Denuncia.objects.create(
+                    denunciante=usuario,
+                    denunciado=jogador,
+                    motivo=motivo,
+                    descricao=descricao
+                )
+
+                aviso = "Denuncia enviada com sucesso!"
+
+            else:
+
+                aviso = "Preencha o motivo e a descricao."
+
+        request.session["aviso_seguranca"] = aviso
+
+        return redirect("seguranca")
+
+    aviso = request.session.pop(
+        "aviso_seguranca", ""
+    )
+
+    return render(request, "seguranca.html", {
+        "usuario_atual": usuario,
+        "jogadores": jogadores,
+        "bloqueios": bloqueios,
+        "denuncias": denuncias,
+        "aviso": aviso
     })

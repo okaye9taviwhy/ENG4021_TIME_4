@@ -28,6 +28,12 @@
 
     <h1>Minhas Conversas</h1>
 
+    {% if aviso_chat %}
+    <p style="color: #ff7777;">
+        {{ aviso_chat }}
+    </p>
+    {% endif %}
+
     <p>
         Jogador atual:
         <strong>{{ usuario_atual.get_full_name }}</strong>
