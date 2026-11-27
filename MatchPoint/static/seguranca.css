@@ -1,0 +1,160 @@
+body {
+    margin: 0;
+    background-color: #101010;
+    color: white;
+    font-family: Arial, sans-serif;
+}
+
+header {
+    background-color: #181818;
+    padding: 25px 8%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+header a {
+    color: white;
+    text-decoration: none;
+    margin-right: 20px;
+}
+
+.logo {
+    font-size: 25px;
+    font-weight: bold;
+}
+
+.logo span {
+    color: #39ff14;
+}
+
+nav a:hover {
+    color: #39ff14;
+}
+
+main {
+    max-width: 900px;
+    margin: 40px auto;
+    padding: 20px;
+}
+
+h1 {
+    color: #39ff14;
+    font-size: 36px;
+}
+
+.subtitulo {
+    color: #aaa;
+    line-height: 1.6;
+}
+
+.caixa {
+    background-color: #202020;
+    padding: 25px;
+    border-radius: 12px;
+    margin-bottom: 25px;
+}
+
+.caixa p {
+    color: #ccc;
+}
+
+button {
+    background-color: #39ff14;
+    color: black;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 6px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+button:hover {
+    opacity: 0.85;
+}
+
+.vermelho {
+    background-color: #e74c3c;
+    color: white;
+}
+
+select, textarea {
+    background-color: #303030;
+    color: white;
+    padding: 12px;
+    border: 1px solid #444;
+    border-radius: 6px;
+    font-family: Arial, sans-serif;
+}
+
+select {
+    margin-right: 10px;
+}
+
+textarea {
+    resize: vertical;
+}
+
+.form-denuncia {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.form-denuncia select {
+    margin-right: 0;
+}
+
+.form-denuncia button {
+    align-self: flex-start;
+}
+
+.jogador {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #303030;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+}
+
+.data {
+    font-size: 13px;
+    margin-bottom: 0;
+}
+
+.denuncia {
+    background-color: #303030;
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    overflow-wrap: anywhere;
+}
+
+.linha {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.status {
+    background-color: #574715;
+    color: #ffd966;
+    padding: 7px 12px;
+    border-radius: 6px;
+    font-size: 13px;
+}
+
+.aviso {
+    background-color: #204b26;
+    color: #b9ffb9;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+small {
+    color: #aaa;
+}

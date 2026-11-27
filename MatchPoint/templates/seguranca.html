@@ -1,0 +1,314 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <title>Segurança - MatchPoint</title>
+
+    <link rel="stylesheet"
+          href="{% static 'seguranca.css' %}">
+
+</head>
+
+<body>
+
+<header>
+
+    <a href="{% url 'home' %}" class="logo">
+        match<span>point.</span>
+    </a>
+
+    <nav>
+        <a href="{% url 'home' %}">Início</a>
+
+        <a href="{% url 'equipes' %}">Equipes</a>
+
+        <a href="{% url 'minhas_conversas' %}">
+            Mensagens
+        </a>
+
+        <a href="{% url 'seguranca' %}">
+            Segurança
+        </a>
+    </nav>
+
+</header>
+
+<main>
+
+    <h1>Central de Segurança</h1>
+
+    <p class="subtitulo">
+        Gerencie bloqueios e denuncie comportamentos
+        inadequados na plataforma.
+    </p>
+
+    <p>
+        Jogador atual:
+        <strong>{{ usuario_atual.get_full_name }}</strong>
+    </p>
+
+    {% if aviso %}
+        <div class="aviso">
+            {{ aviso }}
+        </div>
+    {% endif %}
+
+
+    <!-- TROCAR JOGADOR -->
+
+    <section class="caixa">
+
+        <h2>Modo de demonstração</h2>
+
+        <form method="post"
+              action="{% url 'trocar_jogador' %}">
+
+            {% csrf_token %}
+
+            <input type="hidden"
+                   name="origem"
+                   value="seguranca">
+
+            <select name="jogador">
+
+                <option value="ana">Ana Silva</option>
+
+                <option value="pedro">Pedro Costa</option>
+
+                <option value="julia">Julia Martins</option>
+
+            </select>
+
+            <button type="submit">
+                Trocar jogador
+            </button>
+
+        </form>
+
+    </section>
+
+
+    <!-- BLOQUEAR JOGADOR -->
+
+    <section class="caixa">
+
+        <h2>Bloquear jogador</h2>
+
+        <p>
+            Jogadores bloqueados não poderão trocar
+            mensagens com você.
+        </p>
+
+        <form method="post">
+
+            {% csrf_token %}
+
+            <input type="hidden"
+                   name="acao"
+                   value="bloquear">
+
+            <select name="jogador" required>
+
+                <option value="">
+                    Selecione um jogador
+                </option>
+
+                {% for jogador in jogadores %}
+
+                    <option value="{{ jogador.id }}">
+                        {{ jogador.get_full_name }}
+                    </option>
+
+                {% endfor %}
+
+            </select>
+
+            <button type="submit" class="vermelho">
+                Bloquear
+            </button>
+
+        </form>
+
+    </section>
+
+
+    <!-- JOGADORES BLOQUEADOS -->
+
+    <section class="caixa">
+
+        <h2>Jogadores bloqueados</h2>
+
+        {% for bloqueio in bloqueios %}
+
+            <div class="jogador">
+
+                <div>
+
+                    <strong>
+                        {{ bloqueio.bloqueado.get_full_name }}
+                    </strong>
+
+                    <p class="data">
+                        Bloqueado em
+                        {{ bloqueio.data_hora|date:"d/m/Y" }}
+                    </p>
+
+                </div>
+
+                <form method="post">
+
+                    {% csrf_token %}
+
+                    <input type="hidden"
+                           name="acao"
+                           value="desbloquear">
+
+                    <input type="hidden"
+                           name="jogador"
+                           value="{{ bloqueio.bloqueado.id }}">
+
+                    <button type="submit">
+                        Desbloquear
+                    </button>
+
+                </form>
+
+            </div>
+
+        {% empty %}
+
+            <p>Você não possui jogadores bloqueados.</p>
+
+        {% endfor %}
+
+    </section>
+
+
+    <!-- DENUNCIAR JOGADOR -->
+
+    <section class="caixa">
+
+        <h2>Denunciar jogador</h2>
+
+        <p>
+            Informe o motivo da denúncia e descreva
+            o que aconteceu.
+        </p>
+
+        <form method="post" class="form-denuncia">
+
+            {% csrf_token %}
+
+            <input type="hidden"
+                   name="acao"
+                   value="denunciar">
+
+            <label>Jogador</label>
+
+            <select name="jogador" required>
+
+                <option value="">
+                    Selecione um jogador
+                </option>
+
+                {% for jogador in jogadores %}
+
+                    <option value="{{ jogador.id }}">
+                        {{ jogador.get_full_name }}
+                    </option>
+
+                {% endfor %}
+
+            </select>
+
+            <label>Motivo da denúncia</label>
+
+            <select name="motivo" required>
+
+                <option value="">
+                    Selecione um motivo
+                </option>
+
+                <option>Comportamento inadequado</option>
+
+                <option>Ofensas</option>
+
+                <option>Perfil falso</option>
+
+                <option>Spam</option>
+
+                <option>Outro</option>
+
+            </select>
+
+            <label>Descrição</label>
+
+            <textarea
+                name="descricao"
+                rows="5"
+                placeholder="Descreva o que aconteceu..."
+                required></textarea>
+
+            <button type="submit" class="vermelho">
+                Enviar denúncia
+            </button>
+
+        </form>
+
+    </section>
+
+
+    <!-- HISTORICO DE DENUNCIAS -->
+
+    <section class="caixa">
+
+        <h2>Minhas denúncias</h2>
+
+        {% for denuncia in denuncias %}
+
+            <div class="denuncia">
+
+                <div class="linha">
+
+                    <strong>
+                        {{ denuncia.denunciado.get_full_name }}
+                    </strong>
+
+                    <span class="status">
+                        {{ denuncia.status }}
+                    </span>
+
+                </div>
+
+                <p>
+                    Motivo: {{ denuncia.motivo }}
+                </p>
+
+                <p>
+                    {{ denuncia.descricao }}
+                </p>
+
+                <small>
+                    {{ denuncia.data_hora|date:"d/m/Y H:i" }}
+                </small>
+
+            </div>
+
+        {% empty %}
+
+            <p>Você ainda não realizou denúncias.</p>
+
+        {% endfor %}
+
+    </section>
+
+</main>
+
+</body>
+
+</html>

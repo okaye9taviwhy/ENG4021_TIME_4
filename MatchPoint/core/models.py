@@ -163,3 +163,56 @@ class ParticipacaoEquipe(models.Model):
 
     def __str__(self):
         return self.usuario.username
+
+# SISTEMA DE BLOQUEIOS E DENUNCIAS - SPRINT FINAL
+
+class Bloqueio(models.Model):
+
+    usuario = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="bloqueios_realizados"
+    )
+
+    bloqueado = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="bloqueios_recebidos"
+    )
+
+    data_hora = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ("usuario", "bloqueado")
+
+    def __str__(self):
+        return f"{self.usuario} bloqueou {self.bloqueado}"
+
+
+class Denuncia(models.Model):
+
+    denunciante = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="denuncias_realizadas"
+    )
+
+    denunciado = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="denuncias_recebidas"
+    )
+
+    motivo = models.CharField(max_length=100)
+
+    descricao = models.TextField()
+
+    status = models.CharField(
+        max_length=30,
+        default="Pendente"
+    )
+
+    data_hora = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Denuncia {self.id} - {self.motivo}"
