@@ -76,6 +76,12 @@ urlpatterns = [
         name="chat"
     ),
     path("accounts/", include("django.contrib.auth.urls")),
+    # Sistema de seguranca
+    path(
+        "seguranca/",
+        views.seguranca,
+        name="seguranca"
+    ),
 ]
 
 
